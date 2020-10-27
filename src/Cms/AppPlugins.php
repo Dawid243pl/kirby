@@ -680,7 +680,6 @@ trait AppPlugins
                 'tags'         => include $root . '/config/tags.php',
                 'templates'    => include $root . '/config/templates.php'
             ];
-
         }
 
         // default cache types
