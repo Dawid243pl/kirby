@@ -77,6 +77,18 @@ return function ($kirby) {
             }
         ],
         [
+            'pattern' => $media . '/panel/(css|js)/(:any).(js|css)',
+            'env'     => 'media',
+            'action'  => function ($path, $filename, $type) use ($kirby) {
+                $media = $kirby->root('media') . '/panel/' . $kirby->versionHash();
+                $file  = $path . '/' . $filename . '.' . $type;
+                return $kirby
+                    ->response()
+                    ->type($type)
+                    ->body(F::read($media . '/' . $file));
+            }
+        ],
+        [
             'pattern' => $media . '/pages/(:all)/(:any)/(:any)',
             'env'     => 'media',
             'action'  => function ($path, $hash, $filename) use ($kirby) {
