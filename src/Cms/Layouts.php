@@ -14,4 +14,28 @@ namespace Kirby\Cms;
 class Layouts extends Items
 {
     const ITEM_CLASS = '\Kirby\Cms\Layout';
+
+    public static function factory(array $layouts = null, array $options = [])
+    {
+
+        $first = $layouts[0] ?? [];
+
+        // if there are no wrapping layouts for blocks yet …
+        if (array_key_exists('content', $first) === true) {
+            $layouts = [
+                [
+                    'id'      => uuid(),
+                    'columns' => [
+                        [
+                            'width'  => '1/1',
+                            'blocks' => $layouts
+                        ]
+                    ]
+                ]
+            ];
+        }
+
+        return parent::factory($layouts, $options);
+    }
+
 }
