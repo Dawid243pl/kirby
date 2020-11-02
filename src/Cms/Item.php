@@ -19,6 +19,8 @@ namespace Kirby\Cms;
  */
 class Item
 {
+    const ITEMS_CLASS = '\Kirby\Cms\Items';
+
     use HasSiblings;
 
     /**
@@ -43,10 +45,12 @@ class Item
      */
     public function __construct(array $params = [])
     {
+        $siblingsClass = static::ITEMS_CLASS;
+
         $this->id       = $params['id']       ?? uuid();
         $this->params   = $params;
         $this->parent   = $params['parent']   ?? site();
-        $this->siblings = $params['siblings'] ?? new Items();
+        $this->siblings = $params['siblings'] ?? new $siblingsClass();
     }
 
     /**

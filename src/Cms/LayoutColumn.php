@@ -16,6 +16,8 @@ use Kirby\Toolkit\Str;
  */
 class LayoutColumn extends Item
 {
+    const ITEMS_CLASS = '\Kirby\Cms\LayoutColumns';
+
     /**
      * @var \Kirby\Cms\Blocks
      */

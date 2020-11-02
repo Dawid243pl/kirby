@@ -2,6 +2,7 @@
 
 use Kirby\Cms\Block;
 use Kirby\Cms\BlocksField;
+use Kirby\Cms\Layouts;
 use Kirby\Data\Data;
 use Kirby\Toolkit\I18n;
 use Kirby\Toolkit\Str;
@@ -44,7 +45,7 @@ return [
             return $this->blocksField->fieldsets();
         },
         'value' => function () {
-            $value = $this->value;
+            $value = $this->layoutsCollection($this->value)->toArray();
 
             foreach ($value as $layoutIndex => $layout) {
                 foreach ($layout['columns'] as $columnIndex => $column) {
@@ -53,6 +54,13 @@ return [
             }
 
             return $value;
+        }
+    ],
+    'methods' => [
+        'layoutsCollection' => function (array $layouts) {
+            return Layouts::factory($layouts, [
+                'parent' => $this->model,
+            ]);
         }
     ],
     'api' => function () {
@@ -97,7 +105,7 @@ return [
         ];
     },
     'save' => function (array $value = null) {
-        $value = (array)$value;
+        $value = $this->layoutsCollection($value)->toArray();
 
         foreach ($value as $layoutIndex => $layout) {
             foreach ($layout['columns'] as $columnIndex => $column) {

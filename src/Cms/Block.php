@@ -18,7 +18,7 @@ use Throwable;
  */
 class Block extends Item
 {
-    use HasSiblings;
+    const ITEMS_CLASS = '\Kirby\Cms\Blocks';
 
     /**
      * @var \Kirby\Cms\Content
@@ -26,29 +26,9 @@ class Block extends Item
     protected $content;
 
     /**
-     * @var string
-     */
-    protected $id;
-
-    /**
      * @var bool
      */
     protected $isHidden;
-
-    /**
-     * @var array
-     */
-    protected $params;
-
-    /**
-     * @var \Kirby\Cms\Page|\Kirby\Cms\Site|\Kirby\Cms\User|\Kirby\Cms\File
-     */
-    protected $parent;
-
-    /**
-     * @var \Kirby\Cms\Blocks
-     */
-    protected $siblings;
 
     /**
      * @var string
@@ -75,6 +55,8 @@ class Block extends Item
      */
     public function __construct(array $params)
     {
+        parent::__construct($params);
+
         // import old block format
         if (isset($params['_key']) === true) {
             $params['type']    = $params['_key'];
@@ -87,10 +69,7 @@ class Block extends Item
         }
 
         $this->content  = $params['content']  ?? [];
-        $this->id       = $params['id']       ?? uuid();
         $this->isHidden = $params['isHidden'] ?? false;
-        $this->parent   = $params['parent']   ?? site();
-        $this->siblings = $params['siblings'] ?? new Blocks();
         $this->type     = $params['type']     ?? null;
 
         // create the content object
@@ -156,27 +135,6 @@ class Block extends Item
     }
 
     /**
-     * Block factory
-     *
-     * @param array $params
-     * @return \Kirby\Cms\Block
-     */
-    public static function factory(array $params)
-    {
-        return new static($params);
-    }
-
-    /**
-     * Returns the block id (UUID v4)
-     *
-     * @return string
-     */
-    public function id(): string
-    {
-        return $this->id;
-    }
-
-    /**
      * Checks if the block is empty
      *
      * @return bool
@@ -205,37 +163,6 @@ class Block extends Item
     public function isNotEmpty(): bool
     {
         return $this->isEmpty() === false;
-    }
-
-    /**
-     * Returns the Kirby instance
-     *
-     * @return \Kirby\Cms\App
-     */
-    public function kirby()
-    {
-        return $this->parent()->kirby();
-    }
-
-    /**
-     * Returns the parent model
-     *
-     * @return \Kirby\Cms\Page | \Kirby\Cms\Site | \Kirby\Cms\File | \Kirby\Cms\User
-     */
-    public function parent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * Returns the sibling collection
-     * This is required by the HasSiblings trait
-     *
-     * @return \Kirby\Editor\Blocks
-     */
-    protected function siblingsCollection()
-    {
-        return $this->siblings;
     }
 
     /**
