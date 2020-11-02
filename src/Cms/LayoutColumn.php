@@ -80,6 +80,7 @@ class LayoutColumn extends Item
         return [
             'blocks' => $this->blocks()->toArray(),
             'id'     => $this->id(),
+            'width'  => $this->width(),
         ];
     }
 
