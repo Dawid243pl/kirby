@@ -11,5 +11,4 @@ class LayoutTest extends TestCase
         $layout = new Layout();
         $this->assertInstanceOf('Kirby\Cms\LayoutColumns', $layout->columns());
     }
-
 }

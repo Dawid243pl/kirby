@@ -36,5 +36,4 @@ class Layouts extends Items
 
         return parent::factory($layouts, $options);
     }
-
 }
