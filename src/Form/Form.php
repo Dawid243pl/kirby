@@ -82,7 +82,7 @@ class Form
             }
 
             try {
-                $field = new Field($props['type'], $props, $this->fields);
+                $field = Field::factory($props['type'], $props, $this->fields);
             } catch (Throwable $e) {
                 $field = static::exceptionField($e, $props);
             }
@@ -191,7 +191,7 @@ class Form
             'text'  => strip_tags($message),
         ]);
 
-        return new Field('info', $props);
+        return Field::factory('info', $props);
     }
 
     /**
