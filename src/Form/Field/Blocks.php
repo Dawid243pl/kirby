@@ -4,14 +4,13 @@ namespace Kirby\Form\Field;
 
 use Kirby\Cms\Block;
 use Kirby\Cms\BlocksField;
+use Kirby\Form\FieldClass;
 use Kirby\Form\Mixin\EmptyState;
 use Kirby\Form\Mixin\Max;
 use Kirby\Form\Mixin\Min;
-use Kirby\Form\FieldClass;
 
 class Blocks extends FieldClass
 {
-
     use EmptyState;
     use Max;
     use Min;
@@ -20,11 +19,9 @@ class Blocks extends FieldClass
     protected $blocks;
     protected $value = [];
 
-    public function __construct(array $params)
+    public function __construct(array $params = [])
     {
-        $this->blocks = new BlocksField($params['model'] ?? site(), [
-            'fieldsets' => $params['fieldsets'] ?? null
-        ]);
+        $this->blocks = new BlocksField($params['model'] ?? site(), $params);
 
         $this->fieldsets = $this->blocks->fieldsets();
 
@@ -49,6 +46,11 @@ class Blocks extends FieldClass
     public function fill($value = null)
     {
         $this->value = $this->blocks()->value($this->valueFromJson($value));
+    }
+
+    public function isEmpty(): bool
+    {
+        return count($this->value()) === 0;
     }
 
     public function group(): string
@@ -143,5 +145,4 @@ class Blocks extends FieldClass
             }
         ];
     }
-
 }

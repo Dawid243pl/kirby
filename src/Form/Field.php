@@ -258,7 +258,7 @@ class Field extends Component
      */
     public static function factory(string $type, array $attrs = [], ?Fields $formFields = null)
     {
-        $field = static::$types[$type];
+        $field = static::$types[$type] ?? null;
 
         if (is_string($field) && class_exists($field) === true) {
             $attrs['siblings'] = $formFields;

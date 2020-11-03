@@ -2,17 +2,16 @@
 
 namespace Kirby\Form;
 
+use Exception;
 use Kirby\Cms\HasSiblings;
 use Kirby\Cms\ModelWithContent;
 use Kirby\Data\Data;
-use Kirby\Exception\InvalidArgumentException;
 use Kirby\Toolkit\I18n;
 use Kirby\Toolkit\Str;
 use Throwable;
 
 abstract class FieldClass
 {
-
     use HasSiblings;
 
     protected $after;
@@ -48,10 +47,6 @@ abstract class FieldClass
 
     public function __construct(array $params = [])
     {
-        if (empty($params['name']) === true) {
-            throw new InvalidArgumentException('The field name is missing');
-        }
-
         $this->params = $params;
 
         $this->setAfter($params['after'] ?? null);
@@ -63,7 +58,7 @@ abstract class FieldClass
         $this->setIcon($params['icon'] ?? null);
         $this->setLabel($params['label'] ?? null);
         $this->setModel($params['model'] ?? site());
-        $this->setName($params['name']);
+        $this->setName($params['name'] ?? null);
         $this->setPlaceholder($params['placeholder'] ?? null);
         $this->setRequired($params['required'] ?? false);
         $this->setSiblings($params['siblings'] ?? null);
@@ -270,7 +265,7 @@ abstract class FieldClass
      */
     public function name(): string
     {
-        return $this->name;
+        return $this->name ?? $this->type();
     }
 
     /**
@@ -286,7 +281,11 @@ abstract class FieldClass
     protected function needsValue(): bool
     {
         // check simple conditions first
-        if ($this->isSaveable() === false || $this->isRequired() === false || $this->isEmpty() === false) {
+        if (
+            $this->isSaveable() === false ||
+            $this->isRequired() === false ||
+            $this->isEmpty()    === false
+        ) {
             return false;
         }
 
@@ -361,7 +360,7 @@ abstract class FieldClass
     /**
      * If `true`, the field has to be filled in correctly to be saved.
      *
-     * @return boolean
+     * @return bool
      */
     public function required(): bool
     {
@@ -433,7 +432,7 @@ abstract class FieldClass
         $this->model = $model;
     }
 
-    protected function setName(string $name)
+    protected function setName(string $name = null)
     {
         $this->name = $name;
     }
@@ -490,7 +489,7 @@ abstract class FieldClass
     /**
      * Should the field be translatable?
      *
-     * @return boolean
+     * @return bool
      */
     public function translate(): bool
     {
@@ -516,7 +515,7 @@ abstract class FieldClass
 
     public function type(): string
     {
-        return lcfirst(basename(str_replace(['\\', 'Field'],  ['/', ''], static::CLASS)));
+        return lcfirst(basename(str_replace(['\\', 'Field'], ['/', ''], static::class)));
     }
 
     /**
@@ -625,5 +624,4 @@ abstract class FieldClass
     {
         return $this->width ?? '1/1';
     }
-
 }

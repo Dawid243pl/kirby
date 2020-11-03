@@ -132,16 +132,16 @@ class BlocksFieldTest extends TestCase
         $app->setCurrentLanguage('en');
         $field = $this->field('blocks', $props);
 
-        $this->assertFalse($field->fieldsets['heading']['tabs']['content']['fields']['text']['translate']);
-        $this->assertFalse($field->fieldsets['heading']['tabs']['content']['fields']['text']['disabled']);
+        $this->assertFalse($field->fieldsets()['heading']['tabs']['content']['fields']['text']['translate']);
+        $this->assertFalse($field->fieldsets()['heading']['tabs']['content']['fields']['text']['disabled']);
 
         // secondary language
         $app = $app->clone();
         $app->setCurrentLanguage('de');
 
         $field = $this->field('blocks', $props);
-        $this->assertFalse($field->fieldsets['heading']['tabs']['content']['fields']['text']['translate']);
-        $this->assertTrue($field->fieldsets['heading']['tabs']['content']['fields']['text']['disabled']);
+        $this->assertFalse($field->fieldsets()['heading']['tabs']['content']['fields']['text']['translate']);
+        $this->assertTrue($field->fieldsets()['heading']['tabs']['content']['fields']['text']['disabled']);
     }
 
     public function testTranslateFieldset()
@@ -181,15 +181,15 @@ class BlocksFieldTest extends TestCase
         $app->setCurrentLanguage('en');
         $field = $this->field('blocks', $props);
 
-        $this->assertFalse($field->fieldsets['heading']['translate']);
-        $this->assertFalse($field->fieldsets['heading']['disabled']);
+        $this->assertFalse($field->fieldsets()['heading']['translate']);
+        $this->assertFalse($field->fieldsets()['heading']['disabled']);
 
         // secondary language
         $app = $app->clone();
         $app->setCurrentLanguage('de');
 
         $field = $this->field('blocks', $props);
-        $this->assertFalse($field->fieldsets['heading']['translate']);
-        $this->assertTrue($field->fieldsets['heading']['disabled']);
+        $this->assertFalse($field->fieldsets()['heading']['translate']);
+        $this->assertTrue($field->fieldsets()['heading']['disabled']);
     }
 }

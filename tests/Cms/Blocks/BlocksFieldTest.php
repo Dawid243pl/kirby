@@ -531,7 +531,7 @@ class BlocksFieldTest extends TestCase
         $this->assertArrayHasKey('events', $fieldsets);
         $this->assertArrayHasKey('tabs', $fieldsets['events']);
         $this->assertArrayHasKey('eventlist', $fieldsets['events']['tabs']['content']['fields']);
-        $this->assertInstanceOf('\Kirby\Cms\BlocksField', $fieldsets['events']['tabs']['content']['fields']['eventlist']['blocksField']);
+        $this->assertArrayHasKey('fieldsets', $fieldsets['events']['tabs']['content']['fields']['eventlist']);
     }
 
     public function testExtendUnsetFieldsetFields()

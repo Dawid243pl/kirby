@@ -3,7 +3,9 @@ icon: video
 preview: video
 fields:
   url:
+    label: URL
     type: url
   caption:
+    label: Caption
     type: writer
     inline: true

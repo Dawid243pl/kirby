@@ -65,5 +65,4 @@ class Layout extends Blocks
     {
         return [];
     }
-
 }
