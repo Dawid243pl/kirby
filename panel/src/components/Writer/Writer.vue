@@ -135,7 +135,10 @@ export default {
         update: () => {
           this.html    = this.editor.getHTML();
           this.isEmpty = this.editor.isEmpty();
-          this.$emit("input", this.html);
+
+          if (this.html != this.value) {
+            this.$emit("input", this.html);
+          }
         }
       },
       extensions: [

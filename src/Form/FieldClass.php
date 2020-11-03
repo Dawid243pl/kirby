@@ -39,6 +39,10 @@ abstract class FieldClass
 
     public function __call(string $param, array $args)
     {
+        if (isset($this->$param) === true) {
+            return $this->$param;
+        }
+
         return $this->params[$param] ?? null;
     }
 
@@ -48,8 +52,7 @@ abstract class FieldClass
             throw new InvalidArgumentException('The field name is missing');
         }
 
-        $this->params   = $params;
-        $this->siblings = $params['siblings'] ?? new Fields([]);
+        $this->params = $params;
 
         $this->setAfter($params['after'] ?? null);
         $this->setAutofocus($params['autofocus'] ?? false);
@@ -63,6 +66,7 @@ abstract class FieldClass
         $this->setName($params['name']);
         $this->setPlaceholder($params['placeholder'] ?? null);
         $this->setRequired($params['required'] ?? false);
+        $this->setSiblings($params['siblings'] ?? null);
         $this->setTranslate($params['translate'] ?? true);
         $this->setWhen($params['when'] ?? null);
         $this->setWidth($params['width'] ?? null);
@@ -104,11 +108,7 @@ abstract class FieldClass
      */
     public function data(bool $default = false)
     {
-        if ($this->isSaveable() === false) {
-            return null;
-        }
-
-        return $this->value('txt', $default);
+        return $this->store($this->value($default));
     }
 
     /**
@@ -379,11 +379,11 @@ abstract class FieldClass
     }
 
     /**
-     * DEPRECATED!
+     * DEPRECATED
      *
      * @return bool
      */
-    public function save(): bool
+    public function save()
     {
         return $this->isSaveable();
     }
@@ -448,6 +448,11 @@ abstract class FieldClass
         $this->required = $required;
     }
 
+    protected function setSiblings(Fields $siblings = null)
+    {
+        $this->siblings = $siblings ?? new Fields([]);
+    }
+
     protected function setTranslate(bool $translate = true)
     {
         $this->translate = $translate;
@@ -475,6 +480,11 @@ abstract class FieldClass
         }
 
         return null;
+    }
+
+    public function store($value)
+    {
+        return $value;
     }
 
     /**
@@ -564,19 +574,17 @@ abstract class FieldClass
      *
      * @return mixed
      */
-    public function value(string $format = 'php', bool $default = false)
+    public function value(bool $default = false)
     {
         if ($this->isSaveable() === false) {
             return null;
         }
 
         if ($default === true && $this->isEmpty() === true) {
-            $value = $this->default();
-        } else {
-            $value = $this->value;
+            return $this->default();
         }
 
-        return $this->{'valueFor' . $format}($value);
+        return $this->value;
     }
 
     protected function valueFromJson($value): array
@@ -593,19 +601,18 @@ abstract class FieldClass
         return Data::decode($value, 'yaml');
     }
 
-    protected function valueForJS($value)
+    protected function valueToJson(array $value = null, bool $pretty = false): string
     {
-        return $value;
+        if ($pretty === true) {
+            return json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        }
+
+        return json_encode($value);
     }
 
-    protected function valueForPHP($value)
+    protected function valueToYaml(array $value = null): string
     {
-        return $value;
-    }
-
-    protected function valueForTxt($value)
-    {
-        return $value;
+        return Data::encode($value, 'yaml');
     }
 
     /**

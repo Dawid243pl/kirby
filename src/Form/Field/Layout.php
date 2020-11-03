@@ -2,47 +2,31 @@
 
 namespace Kirby\Form\Field;
 
-use Kirby\Cms\BlocksField;
 use Kirby\Cms\Layouts;
-use Kirby\Form\Mixin\EmptyState;
-use Kirby\Form\FieldClass;
+use Kirby\Toolkit\Str;
 
-class Layout extends FieldClass
+class Layout extends Blocks
 {
-
-    use EmptyState;
-
-    protected $blocks;
-    protected $fieldsets;
     protected $layouts;
 
     public function __construct(array $params)
     {
-        $this->blocks = new BlocksField($params['model'] ?? site(), [
-            'fieldsets' => $params['fieldsets'] ?? null
-        ]);
-
-        $this->fieldsets = $this->blocks->fieldsets();
-        $this->value     = [];
-
+        $this->setLayouts($params['layouts'] ?? ['1/1']);
         parent::__construct($params);
-
-        $this->setEmpty($params['empty'] ?? null);
-    }
-
-    public function blocks()
-    {
-        return $this->blocks;
-    }
-
-    public function fieldsets()
-    {
-        return $this->fieldsets;
     }
 
     public function fill($value = null)
     {
-        $this->value = $this->valueFromJson($value);
+        $value   = $this->valueFromJson($value);
+        $layouts = Layouts::factory($value, ['parent' => $this->model])->toArray();
+
+        foreach ($layouts as $layoutIndex => $layout) {
+            foreach ($layout['columns'] as $columnIndex => $column) {
+                $layouts[$layoutIndex]['columns'][$columnIndex]['blocks'] = $this->blocks->value($column['blocks'], false);
+            }
+        }
+
+        $this->value = $layouts;
     }
 
     public function layouts(): ?array
@@ -52,60 +36,9 @@ class Layout extends FieldClass
 
     public function props(): array
     {
-        $props = parent::props();
-
-        $props['fieldsets'] = $this->fieldsets();
-        $props['empty']     = $this->empty();
-        $props['layouts']   = $this->layouts();
-
-        return $props;
-    }
-
-    public function routes(): array
-    {
-
-        $field = $this;
-
         return [
-            [
-                'pattern' => 'uuid',
-                'action'  => function () {
-                    return ['uuid' => uuid()];
-                }
-            ],
-            [
-                'pattern' => 'fieldsets/(:any)',
-                'method'  => 'GET',
-                'action'  => function ($type) use ($field) {
-                    $blocks   = $field->blocks();
-                    $fields   = $blocks->fields($type);
-                    $defaults = $blocks->form($fields, [])->data(true);
-                    $content  = $blocks->form($fields, $defaults)->values();
-
-                    return Block::factory([
-                        'content' => $content,
-                        'type'    => $type
-                    ])->toArray();
-                }
-            ],
-            [
-                'pattern' => 'fieldsets/(:any)/fields/(:any)/(:all?)',
-                'method'  => 'ALL',
-                'action'  => function (string $fieldsetType, string $fieldName, string $path = null) use ($field) {
-                    $blocks = $field->blocks();
-                    $fields = $blocks->fields($fieldsetType);
-                    $field  = $blocks->form($fields)->field($fieldName);
-
-                    $fieldApi = $this->clone([
-                        'routes' => $field->api(),
-                        'data'   => array_merge($this->data(), ['field' => $field])
-                    ]);
-
-                    return $fieldApi->call($path, $this->requestMethod(), $this->requestData());
-                }
-            ],
-        ];
-
+            'layouts' => $this->layouts()
+        ] + parent::props();
     }
 
     protected function setLayouts(array $layouts = [])
@@ -115,20 +48,7 @@ class Layout extends FieldClass
         }, $layouts);
     }
 
-    public function valueForPHP($value)
-    {
-        $value = Layouts::factory($value, ['parent' => $this->model])->toArray();
-
-        foreach ($value as $layoutIndex => $layout) {
-            foreach ($layout['columns'] as $columnIndex => $column) {
-                $value[$layoutIndex]['columns'][$columnIndex]['blocks'] = $this->blocks->value($column['blocks'], false);
-            }
-        }
-
-        return $value;
-    }
-
-    public function valueForTxt($value)
+    public function store($value)
     {
         $value = Layouts::factory($value, ['parent' => $this->model])->toArray();
 
@@ -138,7 +58,12 @@ class Layout extends FieldClass
             }
         }
 
-        return json_encode($value);
+        return $this->valueToJson($value, $this->pretty());
+    }
+
+    public function validations(): array
+    {
+        return [];
     }
 
 }
