@@ -1,4 +1,5 @@
 <template>
+  <portal>
   <k-dropdown-content
     ref="options"
     :style="styles"
@@ -28,6 +29,7 @@
       {{ $t("delete") }}
     </k-dropdown-item>
   </k-dropdown-content>
+  </portal>
 </template>
 
 <script>
@@ -48,7 +50,7 @@ export default {
     styles() {
       if (this.mouse) {
         return {
-          position: "fixed",
+          position: "fixed !important",
           left: this.left + "px",
           top: this.top + "px"
         };
@@ -60,8 +62,8 @@ export default {
       this.$refs.options.close();
     },
     open(event) {
-      this.top = event.clientY - 24;
-      this.left = event.clientX;
+      this.top = event.pageY;
+      this.left = event.pageX;
 
       this.$refs.options.open();
     },
