@@ -3,7 +3,8 @@ wysiwyg: true
 preview: heading
 fields:
   text:
-    type: text
+    type: writer
+    inline: true
   level:
     type: select
     width: 1/2

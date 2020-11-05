@@ -30,6 +30,7 @@ class Fieldset extends Item
     protected $translate;
     protected $type;
     protected $unset;
+    protected $wysiwyg;
 
     /**
      * Creates a new Fieldset object
@@ -56,6 +57,7 @@ class Fieldset extends Item
         $this->tabs      = $this->createTabs($params);
         $this->translate = $params['translate'] ?? true;
         $this->unset     = $params['unset'] ?? false;
+        $this->wysiwyg   = $params['wysiwyg'] ?? false;
 
         if (
             $this->translate === false &&
@@ -183,6 +185,7 @@ class Fieldset extends Item
             'translate' => $this->translate,
             'type'      => $this->type,
             'unset'     => $this->unset,
+            'wysiwyg'   => $this->wysiwyg,
         ];
     }
 

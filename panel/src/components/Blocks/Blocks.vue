@@ -15,6 +15,7 @@
         v-if="fieldsets[block.type]"
         :ref="'block-' + block.id"
         :key="block.id"
+        :compact="compact"
         :endpoints="endpoints"
         :fieldset="fieldsets[block.type]"
         :is-full="isFull"
@@ -61,6 +62,27 @@
       @add="add"
     />
 
+    <k-overlay ref="overlay" @close="close(edit)">
+      <div class="k-block-drawer" @click="$refs.overlay.close()">
+        <div class="k-block-drawer-box" @click.stop>
+          <k-block-default
+            v-if="edit"
+            :compact="compact"
+            :endpoints="endpoints"
+            :fieldset="fieldsets[edit.type]"
+            :is-full="isFull"
+            :is-hidden="edit.isHidden === true"
+            :is-open="true"
+            :is-sticky="true"
+            v-bind="edit"
+            @update="update(edit, $event)"
+          />
+        </div>
+      </div>
+
+    </k-overlay>
+
+
     <k-remove-dialog ref="removeAll" @submit="removeAll">
       {{ $t("field.blocks.delete.all.confirm") }}
     </k-remove-dialog>
@@ -93,6 +115,7 @@ export default {
   },
   data() {
     return {
+      edit: null,
       blocks: this.value,
       opened: [],
     };
@@ -157,14 +180,11 @@ export default {
       }
     },
     click(block, event) {
-      if (this.compact) {
-        event.preventDefault();
-      }
-
       this.$emit("click", block);
     },
     close(block) {
       const index = this.opened.indexOf(block.id);
+      this.edit = null;
       this.$delete(this.opened, index);
       this.$emit("close", this.opened);
     },
@@ -230,6 +250,10 @@ export default {
     },
     open(block) {
       if (this.opened.includes(block.id) === false) {
+        if (this.compact) {
+          this.openOverlay(block);
+        }
+
         this.opened.push(block.id);
         this.$emit("open", this.opened);
 
@@ -237,6 +261,10 @@ export default {
           this.focus(block);
         });
       }
+    },
+    openOverlay(block) {
+      this.edit = block;
+      this.$refs.overlay.open();
     },
     remove(block) {
       const index = this.blocks.findIndex(element => element.id === block.id);
@@ -260,7 +288,10 @@ export default {
       this.save();
     },
     update(block, content) {
-      this.$set(block, "content", content);
+      const index = this.blocks.findIndex(element => element.id === block.id);
+      if (index !== -1) {
+        this.$set(this.blocks[index], "content", content);
+      }
       this.save();
     }
   }
@@ -301,12 +332,6 @@ export default {
 }
 .k-blocks-list > .k-blocks-empty:not(:only-child) {
   display: none;
-}
-
-
-.k-blocks[data-compact] .k-block * {
-  pointer-events: none;
-  user-select: none;
 }
 
 .k-blocks-add {

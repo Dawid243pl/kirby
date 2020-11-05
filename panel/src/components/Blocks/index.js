@@ -8,12 +8,14 @@ Vue.component("k-block", Block);
 Vue.component("k-blocks", Blocks);
 
 // helper components
+import BlockDropdown from "./BlockDropdown.vue";
 import BlockFigure from "./BlockFigure.vue";
 import BlockForm from "./BlockForm.vue";
 import BlockHeader from "./BlockHeader.vue";
 import BlockOptions from "./BlockOptions.vue";
 import BlockSelector from "./BlockSelector.vue";
 
+Vue.component("k-block-dropdown", BlockDropdown);
 Vue.component("k-block-figure", BlockFigure);
 Vue.component("k-block-form", BlockForm);
 Vue.component("k-block-header", BlockHeader);

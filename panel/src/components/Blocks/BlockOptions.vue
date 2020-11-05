@@ -6,34 +6,11 @@
       icon="angle-down"
       @click="$refs.options.toggle()"
     />
-    <k-dropdown-content
+    <k-block-dropdown
       ref="options"
-      align="left"
-      @close="$emit('closeOptions')"
-      @open="$emit('openOptions')"
-    >
-      <k-dropdown-item :disabled="isFull" icon="angle-up" @click="$emit('chooseToPrepend')">
-        {{ $t("insert.before") }}
-      </k-dropdown-item>
-      <k-dropdown-item :disabled="isFull" icon="angle-down" @click="$emit('chooseToAppend')">
-        {{ $t("insert.after") }}
-      </k-dropdown-item>
-      <hr>
-      <k-dropdown-item :icon="isOpen ? 'collapse' : 'expand'" @click="$emit(isOpen ? 'close' : 'open')">
-        {{ $t(isOpen ? "collapse" : "expand") }}
-      </k-dropdown-item>
-      <hr>
-      <k-dropdown-item :icon="isHidden ? 'preview' : 'hidden'" @click="$emit(isHidden ? 'show' : 'hide')">
-        {{ isHidden === true ? $t('show') : $t('hide') }}
-      </k-dropdown-item>
-      <k-dropdown-item :disabled="isFull" icon="copy" @click="$emit('duplicate')">
-        {{ $t("duplicate") }}
-      </k-dropdown-item>
-      <hr>
-      <k-dropdown-item icon="trash" @click="$emit('remove')">
-        {{ $t("delete") }}
-      </k-dropdown-item>
-    </k-dropdown-content>
+      v-bind="$props"
+      v-on="$listeners"
+    />
   </k-dropdown>
 </template>
 
@@ -44,6 +21,11 @@ export default {
     isHidden: Boolean,
     isOpen: Boolean,
     wysiwyg: Boolean,
+  },
+  methods: {
+    open(event) {
+      this.$refs.options.open();
+    }
   }
 };
 </script>

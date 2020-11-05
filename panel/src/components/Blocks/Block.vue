@@ -6,10 +6,12 @@
     :data-open="isOpen"
     :data-translate="fieldset.translate"
     class="k-block-container"
+    @contextmenu.prevent="$refs.dropdown.open($event)"
     @mouseenter="mouseenter()"
     @mouseleave="mouseleave()"
   >
     <k-block-options
+      ref="options"
       v-if="isHovered"
       :is-full="isFull"
       :is-hidden="isHidden"
@@ -18,15 +20,27 @@
       @closeOptions="hasOpenOptions = false"
       v-on="$listeners"
     />
+
+    <k-block-dropdown
+      ref="dropdown"
+      :mouse="true"
+      :is-full="isFull"
+      :is-hidden="isHidden"
+      :is-open="isOpen"
+      v-on="$listeners"
+    />
+
     <div :class="className" class="k-block">
       <component
         ref="editor"
         :is="customComponent"
         :is-sticky="wysiwyg"
+        :is-open="isOpen && !compact"
         v-bind="$props"
         v-on="$listeners"
       />
     </div>
+
     <k-remove-dialog ref="removeDialog" @submit="remove">
       {{ $t("field.blocks.delete.confirm") }}
     </k-remove-dialog>
@@ -38,6 +52,7 @@ export default {
   inheritAttrs: false,
   props: {
     attrs: [Array, Object],
+    compact: Boolean,
     content: [Array, Object],
     endpoints: Object,
     fieldset: Object,
@@ -71,7 +86,7 @@ export default {
       return className;
     },
     customComponent() {
-      if (this.isOpen === true) {
+      if (this.isOpen === true && !this.compact) {
         return "k-block-default";
       }
 
@@ -154,5 +169,30 @@ export default {
 }
 .k-block-container[data-hidden] .k-block {
   opacity: .25;
+}
+
+.k-block-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: z-index(toolbar);
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  background: rgba($color-black, .25);
+}
+.k-block-drawer-box {
+  flex-basis: 50rem;
+  background: $color-background;
+  box-shadow: $shadow-xl;
+}
+.k-block-drawer .k-block-default-box {
+  box-shadow: none;
+  border: 0;
+}
+.k-block-drawer .k-block-header {
+  height: 2.5rem;
 }
 </style>

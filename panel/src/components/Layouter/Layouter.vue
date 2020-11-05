@@ -70,17 +70,17 @@ export default {
     editLayout(params) {
       this.edit = params;
 
-      if (this.isEditing === false) {
-        this.$refs.editor.open();
-      }
+      // if (this.isEditing === false) {
+      //   this.$refs.editor.open();
+      // }
 
-      this.$nextTick(() => {
-        this.$nextTick(() => {
-          if (params.block) {
-            this.$refs.blocks.focusOrOpen(params.block);
-          }
-        });
-      });
+      // this.$nextTick(() => {
+      //   this.$nextTick(() => {
+      //     if (params.block) {
+      //       this.$refs.blocks.focusOrOpen(params.block);
+      //     }
+      //   });
+      // });
     },
     updateBlocks(blocks) {
       let layouts = this.$helper.clone(this.value);
