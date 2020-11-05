@@ -312,12 +312,21 @@ $layout-padding: 0;
   height: 100%;
 }
 .k-layout-column .k-block-options {
+  top: 0 !important;
+  bottom: 0;
+  margin: 0 !important;
   width: 2rem !important;
   left: 0rem !important;
-  display: none;
 }
 .k-layout-column .k-block-options .k-sort-handle {
-  display: none;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  opacity: 0;
+}
+.k-layout-column .k-block-options-toggle {
+  display: none !important;
 }
 .k-layout-column .k-block-container {
   padding-left: 1.5rem;

@@ -46,11 +46,13 @@ export default {
   },
   computed: {
     styles() {
-      return {
-        position: "fixed",
-        left: this.left + "px",
-        top: this.top + "px"
-      };
+      if (this.mouse) {
+        return {
+          position: "fixed",
+          left: this.left + "px",
+          top: this.top + "px"
+        };
+      }
     }
   },
   methods: {
