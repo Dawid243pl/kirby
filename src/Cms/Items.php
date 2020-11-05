@@ -19,6 +19,16 @@ class Items extends Collection
     const ITEM_CLASS = '\Kirby\Cms\Item';
 
     /**
+     * @var array
+     */
+    protected $options;
+
+    /**
+     * @var \Kirby\Cms\ModelWithContent
+     */
+    protected $parent;
+
+    /**
      * Constructor
      *
      * @param array $objects
@@ -26,7 +36,9 @@ class Items extends Collection
      */
     public function __construct($objects = [], array $options = [])
     {
-        $this->parent = $options['parent'] ?? site();
+        $this->options = $options;
+        $this->parent  = $options['parent'] ?? site();
+
         parent::__construct($objects, $this->parent);
     }
 

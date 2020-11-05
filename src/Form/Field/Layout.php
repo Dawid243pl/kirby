@@ -22,7 +22,7 @@ class Layout extends Blocks
 
         foreach ($layouts as $layoutIndex => $layout) {
             foreach ($layout['columns'] as $columnIndex => $column) {
-                $layouts[$layoutIndex]['columns'][$columnIndex]['blocks'] = $this->blocks->value($column['blocks'], false);
+                $layouts[$layoutIndex]['columns'][$columnIndex]['blocks'] = $this->blocksToValues($column['blocks']);
             }
         }
 
@@ -54,7 +54,7 @@ class Layout extends Blocks
 
         foreach ($value as $layoutIndex => $layout) {
             foreach ($layout['columns'] as $columnIndex => $column) {
-                $value[$layoutIndex]['columns'][$columnIndex]['blocks'] = $this->blocks->toArray($column['blocks'] ?? []);
+                $value[$layoutIndex]['columns'][$columnIndex]['blocks'] = $this->blocksToValues($column['blocks'] ?? [], 'content');
             }
         }
 

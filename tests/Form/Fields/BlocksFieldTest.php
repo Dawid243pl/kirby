@@ -13,9 +13,41 @@ class BlocksFieldTest extends TestCase
         $this->assertSame('blocks', $field->type());
         $this->assertSame('blocks', $field->name());
         $this->assertSame(null, $field->max());
-        $this->assertTrue(is_array($field->fieldsets()));
+        $this->assertInstanceOf('Kirby\Cms\Fieldsets', $field->fieldsets());
         $this->assertSame([], $field->value());
         $this->assertTrue($field->save());
+    }
+
+    public function testGroups()
+    {
+        $field = $this->field('blocks', [
+            'fieldsets' => [
+                'text' => [
+                    'label' => 'Text',
+                    'type' => 'group',
+                    'fieldsets' => [
+                        'text' => true,
+                        'heading' => true
+                    ]
+                ],
+                'media' => [
+                    'label' => 'Media',
+                    'type' => 'group',
+                    'fieldsets' => [
+                        'image' => true,
+                        'video' => true
+                    ]
+                ]
+            ]
+        ]);
+
+        $groups = $field->fieldsets()->groups();
+
+        $this->assertArrayHasKey('text', $groups);
+        $this->assertArrayHasKey('media', $groups);
+
+        $this->assertSame(['text', 'heading'], $groups['text']['fieldsets']);
+        $this->assertSame(['image', 'video'], $groups['media']['fieldsets']);
     }
 
     public function testMax()
@@ -132,16 +164,16 @@ class BlocksFieldTest extends TestCase
         $app->setCurrentLanguage('en');
         $field = $this->field('blocks', $props);
 
-        $this->assertFalse($field->fieldsets()['heading']['tabs']['content']['fields']['text']['translate']);
-        $this->assertFalse($field->fieldsets()['heading']['tabs']['content']['fields']['text']['disabled']);
+        $this->assertFalse($field->fields('heading')['text']['translate']);
+        $this->assertFalse($field->fields('heading')['text']['disabled']);
 
         // secondary language
         $app = $app->clone();
         $app->setCurrentLanguage('de');
 
         $field = $this->field('blocks', $props);
-        $this->assertFalse($field->fieldsets()['heading']['tabs']['content']['fields']['text']['translate']);
-        $this->assertTrue($field->fieldsets()['heading']['tabs']['content']['fields']['text']['disabled']);
+        $this->assertFalse($field->fields('heading')['text']['translate']);
+        $this->assertTrue($field->fields('heading')['text']['disabled']);
     }
 
     public function testTranslateFieldset()
@@ -181,15 +213,15 @@ class BlocksFieldTest extends TestCase
         $app->setCurrentLanguage('en');
         $field = $this->field('blocks', $props);
 
-        $this->assertFalse($field->fieldsets()['heading']['translate']);
-        $this->assertFalse($field->fieldsets()['heading']['disabled']);
+        $this->assertFalse($field->fieldset('heading')->translate());
+        $this->assertFalse($field->fieldset('heading')->disabled());
 
         // secondary language
         $app = $app->clone();
         $app->setCurrentLanguage('de');
 
         $field = $this->field('blocks', $props);
-        $this->assertFalse($field->fieldsets()['heading']['translate']);
-        $this->assertTrue($field->fieldsets()['heading']['disabled']);
+        $this->assertFalse($field->fieldset('heading')->translate());
+        $this->assertTrue($field->fieldset('heading')->disabled());
     }
 }

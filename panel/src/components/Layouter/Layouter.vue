@@ -21,6 +21,7 @@
           ref="blocks"
           :endpoints="endpoints"
           :fieldsets="fieldsets"
+          :fieldset-groups="fieldsetGroups"
           :max="max"
           :value="currentColumn.blocks"
           group="layout"
@@ -43,6 +44,7 @@ export default {
     empty: String,
     endpoints: Object,
     fieldsets: Object,
+    fieldsetGroups: Object,
     layouts: Array,
     max: Number,
     value: Array

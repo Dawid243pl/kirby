@@ -7,6 +7,7 @@
       :empty="empty"
       :endpoints="endpoints"
       :fieldsets="fieldsets"
+      :fieldset-groups="fieldsetGroups"
       :layouts="layouts"
       :value="value"
       @input="$emit('input', $event)"
@@ -29,6 +30,7 @@ export default {
     ...Field.props,
     empty: String,
     fieldsets: Object,
+    fieldsetGroups: Object,
     layouts: {
       type: Array,
       default() {

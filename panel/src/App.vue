@@ -41,6 +41,16 @@
     <!-- Error dialog -->
     <k-error-dialog />
 
+    <!-- Fatal iframe -->
+    <template v-if="fatal">
+      <div class="k-fatal">
+        <div class="k-fatal-box">
+          <k-headline>The JSON response of the API could not be parsed:</k-headline>
+          <iframe class="k-fatal-iframe" ref="fatal"></iframe>
+        </div>
+      </div>
+    </template>
+
     <!-- Offline warning -->
     <div
       v-if="offline"
@@ -94,6 +104,9 @@ export default {
     defaultTranslation() {
       return this.$store.state.languages.current ? this.$store.state.languages.current === this.$store.state.languages.default : false;
     },
+    fatal() {
+      return this.$store.state.fatal;
+    },
     searchType() {
       return this.$store.state.view === 'users' ? 'users' : 'pages';
     },
@@ -102,6 +115,18 @@ export default {
     },
     translation() {
       return this.$store.state.languages.current ? this.$store.state.languages.current.code : false;
+    }
+  },
+  watch: {
+    fatal(html) {
+      if (html !== null) {
+        this.$nextTick(() => {
+          let doc = this.$refs.fatal.contentWindow.document;
+          doc.open();
+          doc.write(html);
+          doc.close();
+        })
+      }
     }
   },
   created() {
@@ -310,5 +335,38 @@ b {
   position: absolute;
   width: 0;
   height: 0;
+}
+
+.k-fatal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $color-backdrop;
+  display: flex;
+  z-index: z-index(dialog);
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.k-fatal-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: .75rem 1.5rem 1.5rem;
+  box-shadow: $shadow-xl;
+  border-radius: $rounded;
+}
+.k-fatal-box .k-headline {
+  margin-bottom: .75rem;
+}
+.k-fatal-iframe {
+  border: 0;
+  width: 100%;
+  flex-grow: 1;
+  border: 2px solid $color-border;
 }
 </style>
