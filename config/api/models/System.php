@@ -35,6 +35,15 @@ return [
         'license' => function (System $system) {
             return $system->license();
         },
+        'loginMode' => function (System $system) {
+            return $system->loginMode();
+        },
+        'pendingChallenge' => function () {
+            return $this->session()->get('kirby.challenge.type');
+        },
+        'pendingEmail' => function () {
+            return $this->session()->get('kirby.challenge.email');
+        },
         'requirements' => function (System $system) {
             return $system->toArray();
         },
@@ -86,6 +95,9 @@ return [
             'isOk',
             'isInstallable',
             'isInstalled',
+            'loginMode',
+            'pendingChallenge',
+            'pendingEmail',
             'title',
             'translation'
         ],

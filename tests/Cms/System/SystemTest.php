@@ -356,4 +356,37 @@ class SystemTest extends TestCase
         F::write($this->fixtures . '/site/config/.license', json_encode($testLicense));
         $this->assertFalse($system->license());
     }
+
+    /**
+     * @dataProvider loginModeProvider
+     */
+    public function testLoginMode($option, $expected)
+    {
+        $this->assertSame('password', $this->app->system()->loginMode());
+
+        $app = $this->app->clone([
+            'options' => [
+                'panel.login' => $option
+            ]
+        ]);
+        $this->assertSame($expected, $app->system()->loginMode());
+
+        $app = $this->app->clone([
+            'options' => [
+                'panel.login' => ['mode' => $option]
+            ]
+        ]);
+        $this->assertSame($expected, $app->system()->loginMode());
+    }
+
+    public function loginModeProvider()
+    {
+        return [
+            [null,             'password'],
+            ['password',       'password'],
+            ['password-reset', 'password-reset'],
+            ['email',          'email'],
+            ['invalid',        'password']
+        ];
+    }
 }

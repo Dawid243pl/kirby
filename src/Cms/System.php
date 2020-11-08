@@ -341,6 +341,26 @@ class System
     }
 
     /**
+     * Returns the configured UI mode for the login form
+     * ('password', 'password-reset' or 'email')
+     *
+     * @return string
+     */
+    public function loginMode(): string
+    {
+        $mode = $this->app->option('panel.login.mode') ??
+                $this->app->option('panel.login', 'password');
+
+        // check the option against the whitelist
+        if (in_array($mode, ['password', 'password-reset', 'email']) === true) {
+            return $mode;
+        }
+
+        // otherwise return the default
+        return 'password';
+    }
+
+    /**
      * Check for an existing mbstring extension
      *
      * @return bool
