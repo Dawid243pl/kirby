@@ -152,9 +152,9 @@ class AuthProtectionTest extends TestCase
         $this->app->visitor()->ip('10.3.123.234');
         $this->assertTrue($this->auth->track('homer@simpsons.com'));
         $this->assertTrue($this->auth->track('marge@simpsons.com'));
-        $this->assertTrue($this->auth->track('lisa@simpsons.com'));
+        $this->assertTrue($this->auth->track('lisa@simpsons.com', false));
 
-        $this->assertSame('lisa@simpsons.com', $this->failedEmail);
+        $this->assertSame('marge@simpsons.com', $this->failedEmail);
 
         $data = [
             'by-ip' => [
@@ -203,6 +203,7 @@ class AuthProtectionTest extends TestCase
 
     /**
      * @covers ::validatePassword
+     * @covers ::rateLimitException
      */
     public function testValidatePasswordInvalid1()
     {
@@ -225,6 +226,7 @@ class AuthProtectionTest extends TestCase
 
     /**
      * @covers ::validatePassword
+     * @covers ::rateLimitException
      */
     public function testValidatePasswordInvalid2()
     {
@@ -248,6 +250,7 @@ class AuthProtectionTest extends TestCase
 
     /**
      * @covers ::validatePassword
+     * @covers ::rateLimitException
      */
     public function testValidatePasswordBlocked()
     {
@@ -326,6 +329,7 @@ class AuthProtectionTest extends TestCase
 
     /**
      * @covers ::validatePassword
+     * @covers ::rateLimitException
      */
     public function testValidatePasswordDebugBlocked()
     {

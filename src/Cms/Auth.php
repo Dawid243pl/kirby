@@ -2,8 +2,10 @@
 
 namespace Kirby\Cms;
 
+use Kirby\Cms\Auth\EmailChallenge;
 use Kirby\Data\Data;
 use Kirby\Exception\InvalidArgumentException;
+use Kirby\Exception\LogicException;
 use Kirby\Exception\NotFoundException;
 use Kirby\Exception\PermissionException;
 use Kirby\Http\Idn;
@@ -34,6 +36,64 @@ class Auth
     public function __construct(App $kirby)
     {
         $this->kirby = $kirby;
+    }
+
+    /**
+     * Creates an authentication challenge
+     * (one-time auth code)
+     *
+     * @param string $email
+     * @param bool $long If `true`, a long session will be created
+     * @param string $mode Either 'login' or 'reset'
+     * @return string|null Name of the challenge that was created;
+     *                     `null` if the user does not exist or no
+     *                     challenge was available for the user
+     */
+    public function createChallenge(string $email, bool $long = false, string $mode = 'login'): ?string
+    {
+        // ensure that email addresses with IDN domains are in Unicode format
+        $email = Idn::decodeEmail($email);
+
+        if ($this->isBlocked($email) === true) {
+            $this->rateLimitException($email);
+        }
+
+        // rate-limit the number of challenges for DoS/DDoS protection
+        $this->track($email, false);
+
+        $session = $this->kirby->session([
+            'createMode' => 'cookie',
+            'long'       => $long === true
+        ]);
+
+        $session->set('kirby.challenge.email', $email);
+        $session->set('kirby.challenge.tries', 0);
+
+        $challenge = null;
+        if ($user = $this->kirby->users()->find($email)) {
+            $timeout = $this->kirby->option('panel.login.timeout', 10 * 60);
+
+            $challenge = 'email';
+            $code = EmailChallenge::create($user, compact('mode', 'timeout'));
+
+            $session->set('kirby.challenge.type', $challenge);
+
+            if ($code !== null) {
+                $session->set('kirby.challenge.code', password_hash($code, PASSWORD_DEFAULT));
+                $session->set('kirby.challenge.timeout', time() + $timeout);
+            }
+        } else {
+            // fake an email challenge to avoid leaking
+            // whether the user exists
+            $session->set('kirby.challenge.type', 'email');
+        }
+
+        // sleep for a random amount of milliseconds
+        // to make automated attacks harder and to
+        // avoid leaking whether the user exists
+        usleep(random_int(1000, 300000));
+
+        return $challenge;
     }
 
     /**
@@ -265,16 +325,7 @@ class Auth
 
         // check for blocked ips
         if ($this->isBlocked($email) === true) {
-            $this->kirby->trigger('user.login:failed', compact('email'));
-
-            if ($this->kirby->option('debug') === true) {
-                $message = 'Rate limit exceeded';
-            } else {
-                // avoid leaking security-relevant information
-                $message = 'Invalid email or password';
-            }
-
-            throw new PermissionException($message);
+            $this->rateLimitException($email);
         }
 
         // validate the user
@@ -377,6 +428,14 @@ class Auth
         if ($user = $this->user()) {
             $user->logout();
         }
+
+        // clear the pending challenge
+        $session = $this->kirby->session();
+        $session->remove('kirby.challenge.code');
+        $session->remove('kirby.challenge.email');
+        $session->remove('kirby.challenge.timeout');
+        $session->remove('kirby.challenge.tries');
+        $session->remove('kirby.challenge.type');
     }
 
     /**
@@ -395,11 +454,14 @@ class Auth
      * Tracks a login
      *
      * @param string $email
+     * @param bool $triggerHook If `false`, no user.login:failed hook is triggered
      * @return bool
      */
-    public function track(string $email): bool
+    public function track(string $email, bool $triggerHook = true): bool
     {
-        $this->kirby->trigger('user.login:failed', compact('email'));
+        if ($triggerHook === true) {
+            $this->kirby->trigger('user.login:failed', compact('email'));
+        }
 
         $ip   = $this->ipHash();
         $log  = $this->log();
@@ -498,5 +560,81 @@ class Auth
 
             throw $e;
         }
+    }
+
+    /**
+     * Verifies an authentication code that was
+     * requested with the `createChallenge()` method;
+     * if successful, the user is automatically logged in
+     *
+     * @param string $code User-provided auth code to verify
+     * @return \Kirby\Cms\User|null User object of the logged-in user, otherwise
+     *                              (no challenge or invalid code) `null`
+     */
+    public function verifyChallenge(string $code)
+    {
+        // sleep for a random amount of milliseconds
+        // to make automated attacks harder and to
+        // avoid leaking whether the user exists
+        usleep(random_int(1000, 300000));
+
+        // retrieve the user from the session
+        $session = $this->kirby->session();
+        $email = $session->get('kirby.challenge.email');
+        if (is_string($email) !== true) {
+            return null;
+        }
+
+        $user = $this->kirby->users()->find($email);
+        if ($user === null) {
+            return null;
+        }
+
+        // rate-limiting
+        $session->increment('kirby.challenge.tries', 1);
+        if ($session->get('kirby.challenge.tries') > $this->kirby->option('auth.trials', 10)) {
+            return null;
+        }
+
+        // time-limiting
+        $timeout = $session->get('kirby.challenge.timeout');
+        if ($timeout !== null && time() > $timeout) {
+            return null;
+        }
+
+        $challenge = $session->get('kirby.challenge.type');
+        if ($challenge === 'email') {
+            if (EmailChallenge::verify($user, $code) === true) {
+                $this->logout();
+                $user->loginPasswordless();
+
+                return $user;
+            }
+        } else {
+            throw new LogicException('Invalid authentication challenge: ' . $challenge);
+        }
+
+        return null;
+    }
+
+    /**
+     * Triggers the user.login:failed hook and throws a
+     * PermissionException about the exceeded rate limit
+     *
+     * @param string $email
+     * @return void
+     */
+    protected function rateLimitException(string $email): void
+    {
+        $this->kirby->trigger('user.login:failed', compact('email'));
+
+        if ($this->kirby->option('debug') === true) {
+            $message = 'Rate limit exceeded';
+        } else {
+            // avoid leaking security-relevant information
+            $message = 'Invalid email or password';
+        }
+
+        throw new PermissionException($message);
     }
 }
