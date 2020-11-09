@@ -7,10 +7,29 @@
       <k-icon type="alert" />
     </div>
 
-    <k-fieldset :novalidate="true" :fields="fields" v-model="user" />
+    <div class="k-login-fields">
+      <button
+        v-if="loginMode !== 'password'"
+        class="k-login-toggler"
+        type="button"
+        @click="toggleForm"
+      >
+        {{ toggleText }}
+      </button>
+
+      <k-fieldset
+        ref="fieldset"
+        v-model="user"
+        :novalidate="true"
+        :fields="fields"
+      />
+    </div>
 
     <div class="k-login-buttons">
-      <span class="k-login-checkbox">
+      <span
+        v-if="isResetForm === false"
+        class="k-login-checkbox"
+      >
         <k-checkbox-input
           :value="user.remember"
           :label="$t('login.remember')"
@@ -22,7 +41,8 @@
         icon="check"
         type="submit"
       >
-        {{ $t("login") }} <template v-if="isLoading">…</template>
+        {{ $t("login" + (isResetForm ? ".reset" : "")) }}
+        <template v-if="isLoading">…</template>
       </k-button>
     </div>
   </form>
@@ -32,6 +52,7 @@
 export default {
   data() {
     return {
+      currentForm: null,
       isLoading: false,
       issue: "",
       user: {
@@ -43,42 +64,101 @@ export default {
   },
   computed: {
     fields() {
-      return {
+      let fields = {
         email: {
           autofocus: true,
           label: this.$t("email"),
           type: "email",
           required: true,
           link: false,
-        },
-        password: {
+        }
+      };
+
+      if (this.form === "email-password") {
+        fields.password = {
           label: this.$t("password"),
           type: "password",
           minLength: 8,
           required: true,
           autocomplete: "current-password",
           counter: false
-        }
-      };
+        };
+      }
+
+      return fields;
+    },
+    form() {
+      if (this.currentForm) {
+        return this.currentForm;
+      } else if (this.loginMode === "email") {
+        return "email";
+      } else {
+        return "email-password";
+      }
+    },
+    isResetForm() {
+      return (
+        this.loginMode === "password-reset" &&
+        this.form === "email"
+      );
+    },
+    loginMode() {
+      return this.$store.state.system.info.loginMode;
+    },
+    toggleText() {
+      return this.$t(
+        "login.toggleText." +
+        this.loginMode + "." +
+        this.formOpposite(this.form)
+      );
     }
   },
   methods: {
+    formOpposite(input) {
+      if (input === "email-password") {
+        return "email";
+      } else {
+        return "email-password";
+      }
+    },
     async login() {
       this.issue     = null;
       this.isLoading = true;
 
+      // clear field data that is not needed for login
+      let user = Object.assign({}, this.user);
+
+      if (this.currentForm === "email") {
+        user.password = null;
+      }
+
+      if (this.isResetForm === true) {
+        user.remember = false;
+      }
+
       try {
-        await this.$store.dispatch("user/login", this.user);
-        await this.$store.dispatch("system/load", true);
+        const result = await this.$api.auth.login(user);
 
-        this.$store.dispatch("notification/success", this.$t("welcome"));
+        if (result.challenge) {
+          this.$store.dispatch("user/pending", {
+            email: user.email,
+            challenge: result.challenge
+          });
+        } else {
+          this.$store.dispatch("user/login", result.user);
+          await this.$store.dispatch("system/load", true);
 
+          this.$store.dispatch("notification/success", this.$t("welcome"));
+        }
       } catch (error) {
         this.issue = this.$t("error.access.login");
-
       } finally {
         this.isLoading = false;
       }
+    },
+    toggleForm() {
+      this.currentForm = this.formOpposite(this.form);
+      this.$refs.fieldset.focus("email");
     }
   }
 };
