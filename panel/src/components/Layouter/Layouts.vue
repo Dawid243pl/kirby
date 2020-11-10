@@ -20,6 +20,7 @@
               v-for="(column, columnIndex) in layout.columns"
               :key="columnIndex"
               :data-width="column.width"
+              :data-empty="column.blocks.length === 0"
               :id="column.id"
               tabindex="0"
               class="k-column k-layout-column"
@@ -40,7 +41,6 @@
                 })"
               />
               <button
-                v-if="column.blocks.length === 0"
                 class="k-layout-column-filler"
                 @click="$refs[layout.id + '-' + column.id + '-blocks'][0].choose(column.blocks.length)"
               />
@@ -201,22 +201,15 @@ export default {
 </script>
 
 <style lang="scss">
-$layout-color-border: $color-blue-300;
 $layout-padding: 0;
+$layout-gap: 1px;
 
-.k-layouts {
-  background: $color-background;
-  border-radius: $rounded;
-  box-shadow: $shadow;
-}
 .k-layout {
   position: relative;
-  margin: 0;
-  border-radius: $rounded-sm;
-  background: $color-background;
+  margin: 0 -1.5rem;
 }
 .k-layout:not(:last-child) {
-  margin-bottom: 1px;
+  margin-bottom: $layout-gap;
 }
 .k-layout .k-layout-handle,
 .k-layout .k-layout-options {
@@ -225,16 +218,18 @@ $layout-padding: 0;
   bottom: -1px;
   height: calc(100% + 2px);
   width: 1.5rem;
-  left: -1.5rem;
+  left: 0;
   display: none;
   color: $color-gray-500;
 }
 .k-layout .k-layout-options {
   left: auto;
-  right: -1.5rem;
+  right: 0;
   align-items: center;
   justify-content: center;
 }
+.k-layout:focus .k-layout-options,
+.k-layout:focus .k-layout-handle,
 .k-layout:focus-within .k-layout-options,
 .k-layout:focus-within .k-layout-handle {
   display: flex;
@@ -248,21 +243,28 @@ $layout-padding: 0;
   color: $color-black;
 }
 .k-layout-columns.k-grid {
-  grid-gap: 1px;
+  grid-gap: $layout-gap;
+  margin: 0 1.5rem;
 }
 .k-layout-column {
   position: relative;
-  padding: $layout-padding;
   height: 100%;
   background: #fff;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  min-height: 3rem;
+  box-shadow: $shadow;
 }
 
 .k-layout-column-filler {
   flex-grow: 1;
+  cursor: pointer;
+}
+.k-layout-column[data-empty] .k-layout-column-filler {
+  border-top: 0;
+}
+.k-layout-column-filler:hover {
+  background: $color-gray-100;
 }
 .k-layout-column-filler:focus {
   outline: 0;
@@ -308,7 +310,10 @@ $layout-padding: 0;
   align-items: center;
 }
 
-.k-layout:focus,
+.k-layout:focus {
+  outline: 0;
+}
+.k-layout:focus .k-layout-columns,
 .k-layout-column:focus {
   position: relative;
   z-index: 2;
@@ -319,8 +324,6 @@ $layout-padding: 0;
   background: none;
   box-shadow: none;
   padding: 0;
-  margin-bottom: 3rem;
-  border-bottom: 1px dashed $color-background;
 }
 .k-layout-column .k-blocks-empty.k-empty {
   display: none;
