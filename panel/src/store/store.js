@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 // store modules
+import blocks from "./modules/blocks.js";
 import content from "./modules/content.js";
 import heartbeat from "./modules/heartbeat.js";
 import languages from "./modules/languages.js";
@@ -94,6 +95,7 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    blocks: blocks,
     content: content,
     heartbeat: heartbeat,
     languages: languages,

@@ -60,9 +60,6 @@ export default {
 </script>
 
 <style lang="scss">
-.k-block-code {
-  padding: 1.5rem 0;
-}
 .k-block-code-editor {
   position: relative;
   font-size: $text-sm;

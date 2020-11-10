@@ -83,9 +83,9 @@ export default {
   position: absolute;
   display: flex;
   background: $color-black;
-  height: 36px;
+  height: 30px;
   transform: translateX(-50%) translateY(-.75rem);
-  z-index: 1;
+  z-index: z-index(dropdown) + 1;
   box-shadow: $shadow;
   color: $color-white;
   border-radius: $rounded;
@@ -93,11 +93,19 @@ export default {
 .k-writer-toolbar-button.k-button {
   display: flex;
   align-items: center;
-  height: 36px;
-  padding: 0 .5rem;
+  justify-content: center;
+  height: 30px;
+  width: 30px;
+  border-right: 1px solid darken($color-gray-800, 5%);
   font-size: $text-sm !important;
   color: currentColor;
   line-height: 1;
+}
+.k-writer-toolbar-button.k-button:hover {
+  background: rgba(#fff, .15);
+}
+.k-writer-toolbar-button.k-button:last-of-type {
+  border-right: 0;
 }
 .k-writer-toolbar-button.k-writer-toolbar-button-active {
   color: $color-blue-300;

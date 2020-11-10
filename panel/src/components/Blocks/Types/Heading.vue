@@ -32,9 +32,6 @@ export default {
 </script>
 
 <style lang="scss">
-.k-block-heading {
-  padding: .75rem 0;
-}
 .k-block-heading-editor {
   font-weight: $font-bold;
   font-size: $text-3xl;

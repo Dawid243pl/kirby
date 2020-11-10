@@ -45,9 +45,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-.k-block-video {
-  padding: 1.5rem 0;
-}
-</style>

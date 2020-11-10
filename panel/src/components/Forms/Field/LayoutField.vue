@@ -3,13 +3,8 @@
     v-bind="$props"
     class="k-layout-field"
   >
-    <k-block-layouter
-      :empty="empty"
-      :endpoints="endpoints"
-      :fieldsets="fieldsets"
-      :fieldset-groups="fieldsetGroups"
-      :layouts="layouts"
-      :value="value"
+    <k-block-layouts
+      v-bind="$props"
       @input="$emit('input', $event)"
     />
   </k-field>
@@ -18,12 +13,10 @@
 <script>
 import Field from "../Field.vue";
 import Layouts from "@/components/Layouter/Layouts.vue";
-import Layouter from "@/components/Layouter/Layouter.vue";
 
 export default {
   components: {
     "k-block-layouts": Layouts,
-    "k-block-layouter": Layouter
   },
   inheritAttrs: false,
   props: {

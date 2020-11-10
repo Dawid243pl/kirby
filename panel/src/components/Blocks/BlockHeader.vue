@@ -1,17 +1,11 @@
 <template>
-  <header :data-is-open="isOpen" class="k-block-header" @click.prevent="$emit('toggle')">
-    <div class="k-block-header-title">
-      <k-icon :type="icon || 'box'" class="k-block-header-icon" />
-      <span class="k-block-header-name">
-        {{ name }}
-      </span>
-      <span v-if="label" class="k-block-header-label">
-        {{ label }}
-      </span>
-    </div>
-
+  <header class="k-block-header">
+    <k-block-title
+      :content="content"
+      :fieldset="fieldset"
+    />
     <nav
-      v-if="isOpen && hasTabs"
+      v-if="hasTabs"
       class="k-block-header-tabs"
     >
       <k-button
@@ -37,13 +31,11 @@
 <script>
 export default {
   props: {
-    icon: String,
+    content: Object,
+    fieldset: Object,
     isHidden: Boolean,
-    isOpen: Boolean,
-    label: [String, Boolean],
-    name: String,
     tab: String,
-    tabs: Array,
+    tabs: Array
   },
   computed: {
     currentTab() {
@@ -60,32 +52,15 @@ export default {
 $block-header-padding: 1.5rem;
 
 .k-block-header {
-  height: 36px;
+  height: 2.5rem;
+  padding-left: 1.5rem;
   display: flex;
   align-items: center;
   font-size: $text-xs;
   line-height: 1;
   justify-content: space-between;
   cursor: pointer;
-}
-.k-block-header-icon {
-  width: 2rem;
-  color: $color-gray-500;
-}
-.k-block-header-title {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  padding-right: .75rem;
-}
-.k-block-header-name {
-  margin-right: .5rem;
-}
-.k-block-header-label {
-  color: $color-gray-500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  background: #fff;
 }
 .k-block-header-tabs {
   display: flex;

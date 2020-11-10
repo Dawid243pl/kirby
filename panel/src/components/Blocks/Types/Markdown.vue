@@ -28,9 +28,6 @@ export default {
 </script>
 
 <style lang="scss">
-.k-block-markdown {
-  padding: 1.5rem 0;
-}
 .k-block-markdown-editor {
   position: relative;
   font-size: $text-sm;

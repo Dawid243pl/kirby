@@ -40,9 +40,6 @@ export default {
 </script>
 
 <style lang="scss">
-.k-block-quote {
-  padding: 1.5rem 0;
-}
 .k-block-quote-editor {
   padding-left: 1rem;
   border-left: 2px solid #000;

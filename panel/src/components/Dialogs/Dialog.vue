@@ -256,7 +256,7 @@
 }
 
 .k-dialog-footer {
-  border-top: 1px solid $color-border;
+  border-top: 1px solid $color-gray-300;
   padding: 0;
   border-bottom-left-radius: $rounded-xs;
   border-bottom-right-radius: $rounded-xs;

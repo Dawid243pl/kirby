@@ -1,9 +1,7 @@
 <template>
   <div
-    :data-compact="compact"
     :data-empty="blocks.length === 0"
     class="k-blocks"
-    @click="$emit('click')"
   >
     <k-draggable
       v-bind="draggableOptions"
@@ -15,23 +13,21 @@
         v-if="fieldsets[block.type]"
         :ref="'block-' + block.id"
         :key="block.id"
-        :compact="compact"
         :endpoints="endpoints"
         :fieldset="fieldsets[block.type]"
         :is-full="isFull"
         :is-hidden="block.isHidden === true"
-        :is-open="isOpen(block)"
+        :is-selected="selected && selected === block.id"
         v-bind="block"
         @append="add($event, index + 1)"
+        @blur="select(null)"
         @choose="choose($event)"
         @chooseToAppend="choose(index + 1)"
         @chooseToPrepend="choose(index)"
-        @mousedown.native="click(block, $event)"
-        @close="close(block)"
         @convert="convert(block, $event)"
         @duplicate="duplicate(block, index)"
+        @focus="select(block)"
         @hide="hide(block)"
-        @open="open(block)"
         @prepend="add($event, index)"
         @remove="remove(block)"
         @show="show(block)"
@@ -48,40 +44,12 @@
       </template>
     </k-draggable>
 
-    <k-button
-      v-if="!compact && blocks.length"
-      class="k-blocks-add"
-      icon="add"
-      @click="choose(blocks.length)"
-    />
-
     <k-block-selector
       ref="selector"
       :fieldsets="fieldsets"
       :fieldset-groups="fieldsetGroups"
       @add="add"
     />
-
-    <k-overlay ref="overlay" @close="close(edit)">
-      <div class="k-block-drawer" @click="$refs.overlay.close()">
-        <div class="k-block-drawer-box" @click.stop>
-          <k-block-default
-            v-if="edit"
-            :compact="compact"
-            :endpoints="endpoints"
-            :fieldset="fieldsets[edit.type]"
-            :is-full="isFull"
-            :is-hidden="edit.isHidden === true"
-            :is-open="true"
-            :is-sticky="true"
-            v-bind="edit"
-            @update="update(edit, $event)"
-          />
-        </div>
-      </div>
-
-    </k-overlay>
-
 
     <k-remove-dialog ref="removeAll" @submit="removeAll">
       {{ $t("field.blocks.delete.all.confirm") }}
@@ -96,7 +64,6 @@ import debounce from "@/helpers/debounce.js";
 export default {
   inheritAttrs: false,
   props: {
-    compact: Boolean,
     empty: String,
     endpoints: Object,
     fieldsets: Object,
@@ -115,16 +82,14 @@ export default {
   },
   data() {
     return {
-      edit: null,
       blocks: this.value,
-      opened: [],
     };
   },
   computed: {
     draggableOptions() {
       return {
         id: this._uid,
-        handle: true,
+        handle: ".k-block-handle",
         list: this.blocks,
         move: this.move,
         delay: 10,
@@ -146,6 +111,9 @@ export default {
       }
 
       return this.blocks.length >= this.max;
+    },
+    selected() {
+      return this.$store.state.blocks.current;
     }
   },
   watch: {
@@ -162,11 +130,6 @@ export default {
       this.blocks.splice(index, 0, block);
       this.save();
 
-      if (this.compact) {
-        this.$emit("click", block);
-        return;
-      }
-
       this.$nextTick(() => {
         this.focusOrOpen(block);
       });
@@ -181,12 +144,6 @@ export default {
     },
     click(block, event) {
       this.$emit("click", block);
-    },
-    close(block) {
-      const index = this.opened.indexOf(block.id);
-      this.edit = null;
-      this.$delete(this.opened, index);
-      this.$emit("close", this.opened);
     },
     confirmToRemoveAll() {
       this.$refs.removeAll.open();
@@ -226,9 +183,6 @@ export default {
       this.$set(block, "isHidden", true);
       this.save();
     },
-    isOpen(block) {
-      return this.opened.includes(block.id);
-    },
     move(event) {
       // moving block between fields
       if (event.from !== event.to) {
@@ -249,29 +203,20 @@ export default {
       return true;
     },
     open(block) {
-      if (this.opened.includes(block.id) === false) {
-        if (this.compact) {
-          this.openOverlay(block);
-        }
-
-        this.opened.push(block.id);
-        this.$emit("open", this.opened);
-
-        this.$nextTick(() => {
-          this.focus(block);
-        });
+      if (this.$refs["block-" + block.id]) {
+        this.$refs["block-" + block.id][0].open();
       }
-    },
-    openOverlay(block) {
-      this.edit = block;
-      this.$refs.overlay.open();
     },
     remove(block) {
       const index = this.blocks.findIndex(element => element.id === block.id);
 
       if (index !== -1) {
+
+        if (this.selected && this.selected.id === block.id) {
+          this.select(null);
+        }
+
         this.$delete(this.blocks, index);
-        this.close(block);
         this.save();
       }
     },
@@ -282,6 +227,9 @@ export default {
     },
     save() {
       this.$emit("input", this.blocks);
+    },
+    select(block) {
+      this.$store.dispatch("blocks/current", block ? block.id : null);
     },
     show(block) {
       this.$set(block, "isHidden", false);
@@ -303,7 +251,6 @@ export default {
   background: $color-white;
   box-shadow: $shadow;
   border-radius: $rounded;
-  padding: 2rem 0;
 }
 .k-blocks[data-empty] {
   padding: 0;
@@ -317,14 +264,6 @@ export default {
   cursor: -webkit-grabbing;
   background: rgba($color-blue-200, .5);
 }
-.k-blocks .k-sortable-ghost .k-block-options {
-  display: none;
-}
-.k-block-container.sortable-drag {
-  opacity: 0 !important;
-  display: none;
-  cursor: -webkit-grabbing;
-}
 .k-blocks-empty.k-empty {
   cursor: pointer;
   display: flex;
@@ -332,13 +271,5 @@ export default {
 }
 .k-blocks-list > .k-blocks-empty:not(:only-child) {
   display: none;
-}
-
-.k-blocks-add {
-  padding: .75rem 4rem;
-  color: $color-gray-500;
-}
-.k-blocks-add:hover {
-  color: $color-black;
 }
 </style>

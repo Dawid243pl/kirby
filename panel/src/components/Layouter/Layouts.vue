@@ -9,33 +9,26 @@
         <section
           v-for="(layout, layoutIndex) in rows"
           :key="layout.id"
-          :data-current="currentLayout && layout.id === currentLayout.id"
+          :data-current="currentLayout && currentLayout.id === layout.id"
           class="k-layout"
+          @click="currentLayout = layout"
         >
           <k-sort-handle class="k-layout-handle" />
           <k-grid class="k-layout-columns">
             <div
               v-for="(column, columnIndex) in layout.columns"
               :key="columnIndex"
-              :data-current="currentColumn && column.id == currentColumn.id"
               :data-width="column.width"
               :id="column.id"
               class="k-column k-layout-column"
             >
               <k-blocks
-                :compact="true"
+                :ref="layout.id + '-' + column.id + '-blocks'"
                 :endpoints="endpoints"
                 :fieldsets="fieldsets"
                 :max="max"
                 :value="column.blocks"
                 group="layout"
-                @click="editBlocks({
-                  layout,
-                  layoutIndex,
-                  column,
-                  columnIndex,
-                  block: $event
-                })"
                 @input="updateBlocks({
                   layout,
                   layoutIndex,
@@ -43,6 +36,10 @@
                   columnIndex,
                   blocks: $event
                 })"
+              />
+              <button
+                class="k-layout-column-filler"
+                @click="$refs[layout.id + '-' + column.id + '-blocks'][0].choose(column.blocks.length)"
               />
             </div>
           </k-grid>
@@ -107,9 +104,6 @@
 <script>
 export default {
   props: {
-    currentBlock: Object,
-    currentColumn: Object,
-    currentLayout: Object,
     empty: String,
     endpoints: Object,
     fieldsets: Object,
@@ -120,6 +114,7 @@ export default {
   data() {
     return {
       rows: this.value,
+      currentLayout: null,
       nextIndex: null,
     };
   },
@@ -228,14 +223,18 @@ $layout-padding: 0;
   height: calc(100% + 2px);
   width: 1.5rem;
   left: -1.5rem;
+  display: none;
   color: $color-gray-500;
 }
 .k-layout .k-layout-options {
   left: auto;
   right: -1.5rem;
-  display: flex;
   align-items: center;
   justify-content: center;
+}
+.k-layout:hover .k-layout-options,
+.k-layout:hover .k-layout-handle {
+  display: flex;
 }
 .k-layout .k-layout-options > .k-button {
   height: 100%;
@@ -254,11 +253,17 @@ $layout-padding: 0;
   height: 100%;
   background: #fff;
   cursor: pointer;
-}
-.k-layout-column > div {
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 3rem;
 }
 
+.k-layout-column-filler {
+  flex-grow: 1;
+}
+.k-layout-column-filler:focus {
+  outline: 0;
+}
 .k-layout-column .k-block {
   box-shadow: none;
 }
@@ -303,56 +308,14 @@ $layout-padding: 0;
 .k-layout-column[data-current] {
   position: relative;
   z-index: 1;
-  outline: 2px solid $color-blue-400;
 }
 .k-layout-column .k-blocks {
   background: none;
   box-shadow: none;
   padding: 0;
-  height: 100%;
-}
-.k-layout-column .k-block-options {
-  top: 0 !important;
-  bottom: 0;
-  margin: 0 !important;
-  width: 2rem !important;
-  left: 0rem !important;
-}
-.k-layout-column .k-block-options .k-sort-handle {
-  top: 0;
-  bottom: 0;
-  left: 0;
-  height: 100%;
-  opacity: 0;
-}
-.k-layout-column .k-block-options-toggle {
-  display: none !important;
-}
-.k-layout-column .k-block-container {
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
 }
 .k-layout-column .k-blocks-empty.k-empty {
-  border: 0;
-  opacity: 1;
-  min-height: 0;
-}
-.k-layout-column .k-blocks:hover {
-  background: rgba($color-blue-200, .125);
-}
-.k-layout-column .k-blocks-empty.k-empty {
-  padding: 3rem 1.5rem;
-}
-.k-layout-column .k-blocks-empty.k-empty > * {
   display: none;
-}
-.k-layout-column .k-blocks-empty.k-empty::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  content: "";
 }
 
 .k-layout-add-button {

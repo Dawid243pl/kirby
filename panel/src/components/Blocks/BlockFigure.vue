@@ -1,5 +1,5 @@
 <template>
-  <figure class="k-block-figure" @click="$emit('open')">
+  <figure class="k-block-figure" @dblclick="$emit('open')">
     <span class="k-block-figure-container">
       <k-button
         v-if="isEmpty"

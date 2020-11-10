@@ -1,5 +1,5 @@
 <template>
-  <ul class="k-block-gallery-preview" @click="$emit('open')">
+  <ul class="k-block-gallery-preview" @dblclick="$emit('open')">
     <template v-if="content.images.length === 0">
       <li />
       <li />
@@ -23,9 +23,6 @@ export default {
 </script>
 
 <style lang="scss">
-.k-block-gallery {
-  padding: 1.5rem 0;
-}
 .k-block-gallery-preview {
   display: grid;
   grid-gap: .75rem;
@@ -48,6 +45,6 @@ export default {
   right: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 </style>

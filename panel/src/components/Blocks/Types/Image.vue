@@ -3,6 +3,7 @@
     :caption="content.caption"
     :empty-text="$t('field.blocks.image.placeholder') + ' …'"
     :is-empty="!image"
+    class="k-image-block"
     empty-icon="image"
     v-on="$listeners"
   >
@@ -24,8 +25,3 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.k-block-image {
-  padding: 1.5rem 0;
-}
-</style>
