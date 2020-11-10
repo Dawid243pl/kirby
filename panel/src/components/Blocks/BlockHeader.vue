@@ -13,7 +13,7 @@
         :key="tab.name"
         :current="currentTab == tab.name"
         class="k-block-header-tab"
-        @click.stop="$emit('open', tab.name)"
+        @click.stop="$emit('tab', tab.name)"
       >
         {{ tab.label }}
       </k-button>
@@ -49,18 +49,19 @@ export default {
 </script>
 
 <style lang="scss">
+$block-header-height: 2.5rem;
 $block-header-padding: 1.5rem;
 
 .k-block-header {
-  height: 2.5rem;
+  height: $block-header-height;
   padding-left: 1.5rem;
   display: flex;
   align-items: center;
   font-size: $text-xs;
   line-height: 1;
   justify-content: space-between;
-  cursor: pointer;
   background: #fff;
+  padding-right: 2.5rem;
 }
 .k-block-header-tabs {
   display: flex;
@@ -69,7 +70,7 @@ $block-header-padding: 1.5rem;
   margin-right: $block-header-padding - .75rem;
 }
 .k-block-header-tab.k-button {
-  height: 36px;
+  height: $block-header-height;
   padding: 0 .75rem;
   display: flex;
   align-items: center;

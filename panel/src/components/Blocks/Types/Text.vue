@@ -1,30 +1,31 @@
 <template>
   <k-writer
-    ref="editor"
+    ref="input"
     :nodes="false"
-    :placeholder="$t('field.blocks.text.placeholder') + ' …'"
+    :placeholder="placeholder"
     :value="content.text"
-    class="k-block-text-editor"
-    @input="$emit('update', { text: $event })"
+    class="k-block-type-text-input"
+    @input="update({ text: $event })"
   />
 </template>
 
 <script>
 export default {
-  inheritAttrs: false,
-  props: {
-    content: Object
+  computed: {
+    placeholder() {
+      return this.field("text", {}).placeholder;
+    }
   },
   methods: {
     focus() {
-      this.$refs.editor.focus();
+      this.$refs.input.focus();
     }
   }
 };
 </script>
 
 <style lang="scss">
-.k-block-text-editor {
+.k-block-type-text-input {
   font-size: $text-base;
   line-height: 1.5em;
 }

@@ -12,10 +12,6 @@
 
 <script>
 export default {
-  inheritAttrs: false,
-  props: {
-    content: Object
-  },
   computed: {
     video() {
 

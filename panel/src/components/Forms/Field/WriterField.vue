@@ -5,13 +5,20 @@
     v-bind="$props"
     class="k-writer-field"
   >
-    <k-writer
-      ref="input"
-      v-bind="$props"
-      :value="value"
-      class="k-writer-field-input"
-      @input="$emit('input', $event)"
-    />
+    <k-input
+      :after="after"
+      :before="before"
+      :icon="icon"
+      theme="field"
+    >
+      <k-writer
+        ref="input"
+        v-bind="$props"
+        :value="value"
+        class="k-writer-field-input"
+        @input="$emit('input', $event)"
+      />
+    </k-input>
   </k-field>
 </template>
 
@@ -38,12 +45,6 @@ export default {
 <style lang="scss">
 .k-writer-field-input {
   line-height: 1.5em;
-  background: #fff;
-  padding: .325rem .5rem;
-  border: 1px solid $color-border;
-}
-.k-writer-field-input:focus-within {
-  border: 1px solid $color-focus;
-  outline: 2px solid $color-focus-outline;
+  padding: .375rem .5rem;
 }
 </style>

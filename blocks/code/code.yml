@@ -1,15 +1,16 @@
-name: Code
+name: field.blocks.code.name
 icon: code
 wysiwyg: true
 preview: code
 fields:
   code:
-    label: Code
+    label: field.blocks.code.name
     type: textarea
+    placeholder: field.blocks.code.placeholder
     buttons: false
     font: monospace
   language:
-    label: Language
+    label: field.blocks.code.language
     type: select
     default: text
     options:

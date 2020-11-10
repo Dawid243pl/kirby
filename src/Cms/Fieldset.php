@@ -51,8 +51,8 @@ class Fieldset extends Item
         $this->icon      = $params['icon'] ?? null;
         $this->model     = $this->parent;
         $this->kirby     = $this->parent->kirby();
-        $this->name      = $params['name'] ?? Str::ucfirst($this->type);
-        $this->label     = I18n::translate($label = $params['label'] ?? $this->name, $label);
+        $this->name      = $this->createName($params['name'] ?? Str::ucfirst($this->type));
+        $this->label     = $this->createLabel($params['label'] ?? null);
         $this->preview   = $params['preview'] ?? null;
         $this->tabs      = $this->createTabs($params);
         $this->translate = $params['translate'] ?? true;
@@ -79,6 +79,16 @@ class Fieldset extends Item
         $this->fields = array_merge($this->fields, $fields);
 
         return $fields;
+    }
+
+    protected function createName(string $name): string
+    {
+        return I18n::translate($name, $name);
+    }
+
+    protected function createLabel(string $label = null): ?string
+    {
+        return I18n::translate($label, $label);
     }
 
     protected function createTabs(array $params = []): array

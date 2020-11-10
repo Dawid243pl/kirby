@@ -8,6 +8,7 @@
     :data-translation="translation"
     :data-translation-default="defaultTranslation"
     class="k-panel"
+    tabindex="0"
   >
     <!-- Icons -->
     <keep-alive>

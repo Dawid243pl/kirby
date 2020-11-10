@@ -1,12 +1,15 @@
 <template>
   <div
-    :class="'k-block-container-' + type"
+    ref="container"
+    :class="'k-block-container-type-' + type"
     :data-disabled="fieldset.disabled"
     :data-hidden="isHidden"
     :data-selected="isSelected"
     :data-translate="fieldset.translate"
     tabindex="0"
     class="k-block-container"
+    @keydown.ctrl.shift.down.prevent="$emit('sortDown')"
+    @keydown.ctrl.shift.up.prevent="$emit('sortUp')"
     @focus="$emit('focus')"
     @focusin="$emit('focus')"
   >
@@ -29,6 +32,7 @@
     <k-block-drawer
       ref="drawer"
       v-bind="$props"
+      @close="focus()"
       @update="$emit('update', $event)"
     />
 
@@ -56,14 +60,14 @@ export default {
   },
   computed: {
     className() {
-      let className = ["k-block-" + this.type];
+      let className = ["k-block-type-" + this.type];
 
-      if (this.fieldset.preview) {
-        className.push("k-block-" + this.fieldset.preview);
+      if (this.fieldset.preview && this.fieldset.preview !== this.type) {
+        className.push("k-block-type-" + this.fieldset.preview);
       }
 
       if (this.wysiwyg === false) {
-        className.push("k-block-default");
+        className.push("k-block-type-default");
       }
 
       return className;
@@ -73,7 +77,7 @@ export default {
         return this.wysiwygComponent;
       }
 
-      return "k-block-default";
+      return "k-block-type-default";
     },
     listeners() {
       return {
@@ -86,14 +90,14 @@ export default {
       return this.wysiwygComponent !== false;
     },
     wysiwygComponent() {
-      let component = "k-block-" + this.type;
+      let component = "k-block-type-" + this.type;
 
       if (this.$helper.isComponent(component)) {
         return component;
       }
 
       if (this.fieldset.preview) {
-        component = "k-block-" + this.fieldset.preview;
+        component = "k-block-type-" + this.fieldset.preview;
 
         if (this.$helper.isComponent(component)) {
           return component;
@@ -110,6 +114,8 @@ export default {
     focus() {
       if (typeof this.$refs.editor.focus === "function") {
         this.$refs.editor.focus();
+      } else {
+        this.$refs.container.focus();
       }
     },
     open() {

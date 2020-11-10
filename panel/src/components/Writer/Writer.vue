@@ -73,16 +73,7 @@ export default {
     },
     marks: {
       type: [Array, Boolean],
-      default() {
-        return [
-          "bold",
-          "italic",
-          "strike",
-          "underline",
-          "code",
-          "link"
-        ];
-      }
+      default: true
     },
     nodes: {
       type: [Array, Boolean],
@@ -179,12 +170,12 @@ export default {
     },
     createMarks() {
       return this.filterExtensions({
-        code: new Code,
         bold: new Bold,
         italic: new Italic,
-        link: new Link,
         strike: new Strike,
         underline: new Underline,
+        code: new Code,
+        link: new Link,
       }, this.marks);
     },
     createNodes() {

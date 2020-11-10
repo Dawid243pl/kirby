@@ -1,14 +1,17 @@
-name: Quote
+name: field.blocks.quote.name
 icon: quote
 wysiwyg: true
 preview: quote
 fields:
   text:
-    label: Quote Text
+    label: field.blocks.quote.text.label
+    placeholder: field.blocks.quote.text.placeholder
     type: writer
     inline: true
+    icon: quote
   citation:
-    label: Citation
+    label: field.blocks.quote.citation.label
+    placeholder: field.blocks.quote.citation.placeholder
     type: writer
     inline: true
-    placeholder: by …
+    icon: user

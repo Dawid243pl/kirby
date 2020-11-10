@@ -1,66 +1,48 @@
 <template>
-  <div>
-    <div class="k-block-code-editor">
+  <div class="k-block-type-code-editor">
+    <k-input
+      ref="code"
+      :buttons="false"
+      :placeholder="placeholder"
+      :spellcheck="false"
+      :value="content.code"
+      type="textarea"
+      @input="update({ code: $event })"
+    />
+    <div v-if="languages.length" class="k-block-type-code-editor-language">
+      <k-icon type="code" />
       <k-input
-        ref="code"
-        :buttons="false"
-        :placeholder="$t('field.blocks.code.placeholder') + ' …'"
-        :spellcheck="false"
-        :value="content.code"
-        type="textarea"
-        @input="update({ code: $event })"
+        ref="language"
+        :empty="false"
+        :options="languages"
+        :value="content.language"
+        type="select"
+        @input="update({ language: $event })"
       />
-      <div class="k-block-code-editor-language">
-        <k-icon type="code" />
-        <k-input
-          ref="language"
-          :empty="false"
-          :options="languages"
-          :value="content.language"
-          type="select"
-          @input="update({ language: $event })"
-        />
-      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  inheritAttrs: false,
-  props: {
-    content: [Array, Object],
-    fieldset: Object
-  },
   computed: {
+    placeholder() {
+      return this.field("code", {}).placeholder;
+    },
     languages() {
-      let languages = null;
-
-      Object.values(this.fieldset.tabs).forEach(tab => {
-        if (tab.fields.language) {
-          languages = tab.fields.language;
-        }
-      });
-
-      return languages.options;
+      return this.field("language", { options: [] }).options;
     }
   },
   methods: {
     focus() {
       this.$refs.code.focus();
-    },
-    update(value) {
-      this.$emit("update", {
-        ...this.content,
-        ...value
-      });
     }
   }
 };
 </script>
 
 <style lang="scss">
-.k-block-code-editor {
+.k-block-type-code-editor {
   position: relative;
   font-size: $text-sm;
   line-height: 1.5em;
@@ -70,17 +52,17 @@ export default {
   color: #fff;
   font-family: $font-mono;
 }
-.k-block-code-editor .k-editor {
+.k-block-type-code-editor .k-editor {
   white-space: pre-wrap;
   line-height: 1.75em;
 }
-.k-block-code-editor-language {
+.k-block-type-code-editor-language {
   font-size: $text-sm;
   position: absolute;
   right: 0;
   bottom: 0;
 }
-.k-block-code-editor-language .k-icon {
+.k-block-type-code-editor-language .k-icon {
   position: absolute;
   top: 0;
   left: 0;
@@ -89,7 +71,7 @@ export default {
   width: 2rem;
   z-index: 0;
 }
-.k-block-code-editor-language .k-select-input {
+.k-block-type-code-editor-language .k-select-input {
   position: relative;
   padding: .325rem .75rem .5rem 2rem;
   z-index: 1;

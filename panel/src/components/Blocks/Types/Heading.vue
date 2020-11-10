@@ -1,51 +1,50 @@
 <template>
   <k-writer
-    ref="editor"
+    ref="input"
     :data-level="content.level"
     :inline="true"
+    :marks="textField.marks"
     :nodes="false"
-    :placeholder="$t('field.blocks.heading.placeholder') + ' …'"
+    :placeholder="textField.placeholder"
     :value="content.text"
-    class="k-block-heading-editor"
-    @input="$emit('update', {
-      ...content,
-      text: $event
-    })"
+    class="k-block-type-heading-input"
+    @input="update({ text: $event })"
   />
 </template>
 
 <script>
+
 export default {
-  inheritAttrs: false,
-  props: {
-    content: Object
+  computed: {
+    textField() {
+      return this.field("text", {
+        marks: true
+      });
+    }
   },
   methods: {
     focus() {
-      this.$refs.editor.focus();
-    },
-    append() {
-      alert("whohoow");
+      this.$refs.input.focus();
     }
   }
 };
 </script>
 
 <style lang="scss">
-.k-block-heading-editor {
+.k-block-type-heading-input {
   font-weight: $font-bold;
   font-size: $text-3xl;
   line-height: 1.125em;
 }
-.k-block-heading-editor[data-level="2"] {
+.k-block-type-heading-input[data-level="h2"] {
   font-size: $text-2xl;
   line-height: 1.25em;
 }
-.k-block-heading-editor[data-level="3"] {
+.k-block-type-heading-input[data-level="h3"] {
   line-height: 1.25em;
   font-size: $text-xl;
 }
-.k-block-heading-editor .ProseMirror strong {
+.k-block-type-heading-input .ProseMirror strong {
   font-weight: 700;
 }
 </style>

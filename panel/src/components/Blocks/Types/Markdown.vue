@@ -1,40 +1,39 @@
 <template>
-  <div class="k-block-markdown-editor">
-    <k-input
-      ref="code"
-      :buttons="false"
-      :placeholder="$t('field.blocks.markdown.placeholder') + ' …'"
-      :spellcheck="false"
-      :value="content.text"
-      type="textarea"
-      @input="$emit('update', { ...content, text: $event })"
-    />
-  </div>
+  <k-input
+    ref="input"
+    :buttons="false"
+    :placeholder="placeholder"
+    :spellcheck="false"
+    :value="content.text"
+    class="k-block-type-markdown-input"
+    type="textarea"
+    @input="update({ text: $event })"
+  />
 </template>
 
 <script>
 export default {
-  inheritAttrs: false,
-  props: {
-    content: [Array, Object],
-    fieldset: Object
+  computed: {
+    placeholder() {
+      return this.field("text", {}).placeholder;
+    }
   },
   methods: {
     focus() {
-      this.$refs.code.focus();
+      this.$refs.input.focus();
     }
   }
 };
 </script>
 
 <style lang="scss">
-.k-block-markdown-editor {
+.k-block-type-markdown-input {
   position: relative;
   font-size: $text-sm;
   line-height: 1.5em;
   background: $color-background;
   border-radius: $rounded;
-  padding: .5rem;
+  padding: .5rem .5rem 0;
   font-family: $font-mono;
 }
 </style>

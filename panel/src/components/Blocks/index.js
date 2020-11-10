@@ -1,3 +1,4 @@
+/* global require */
 import Vue from "vue";
 
 // main components
@@ -14,6 +15,7 @@ import BlockHeader from "./BlockHeader.vue";
 import BlockOptions from "./BlockOptions.vue";
 import BlockSelector from "./BlockSelector.vue";
 import BlockTitle from "./BlockTitle.vue";
+import BlockType from "./BlockType.vue";
 
 Vue.component("k-block-drawer", BlockDrawer);
 Vue.component("k-block-figure", BlockFigure);
@@ -23,24 +25,19 @@ Vue.component("k-block-selector", BlockSelector);
 Vue.component("k-block-title", BlockTitle);
 
 // block types
-import Code from "./Types/Code.vue";
-import Default from "./Types/Default.vue";
-import Heading from "./Types/Heading.vue";
-import Image from "./Types/Image.vue";
-import Gallery from "./Types/Gallery.vue";
-import Markdown from "./Types/Markdown.vue";
-import Quote from "./Types/Quote.vue";
-import Table from "./Types/Table.vue";
-import Text from "./Types/Text.vue";
-import Video from "./Types/Video.vue";
+const req = require.context("./Types", false, /\.vue$/i);
 
-Vue.component("k-block-code", Code);
-Vue.component("k-block-default", Default);
-Vue.component("k-block-heading", Heading);
-Vue.component("k-block-image", Image);
-Vue.component("k-block-gallery", Gallery);
-Vue.component("k-block-markdown", Markdown);
-Vue.component("k-block-quote", Quote);
-Vue.component("k-block-table", Table);
-Vue.component("k-block-text", Text);
-Vue.component("k-block-video", Video);
+req.keys().map((key) => {
+  // get name and type by filename
+  const name = key.match(/\w+/)[0];
+  const type = name.toLowerCase();
+
+  // load the component
+  let component = req(key).default;
+
+  // extend the component with the block abstract
+  component.extends = BlockType;
+
+  // globally define the block type component
+  Vue.component("k-block-type-" + type, component);
+});

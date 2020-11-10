@@ -12,6 +12,7 @@ use Kirby\Form\FieldClass;
 use Kirby\Form\Mixin\EmptyState;
 use Kirby\Form\Mixin\Max;
 use Kirby\Form\Mixin\Min;
+use Throwable;
 
 class Blocks extends FieldClass
 {

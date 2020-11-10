@@ -1,23 +1,29 @@
 <template>
   <k-dropdown class="k-block-options">
     <k-button
+      :tooltip="$t('edit')"
       icon="edit"
       class="k-block-options-button"
       @click="$emit('open')"
     />
     <k-button
+      :tooltip="$t('insert.after')"
       class="k-block-options-button"
       icon="add"
       @click="$emit('chooseToAppend')"
     />
     <k-button
+      :tooltip="$t('more')"
       class="k-block-options-button"
       icon="dots"
       @click="$refs.options.toggle()"
     />
     <k-button
+      :tooltip="$t('sort')"
       class="k-block-options-button k-block-handle"
       icon="sort"
+      @keydown.up.prevent="$emit('sortUp')"
+      @keydown.down.prevent="$emit('sortDown')"
     />
     <k-dropdown-content
       ref="options"
@@ -80,6 +86,9 @@ $block-options-button-size: 30px;
   width: $block-options-button-size;
   height: $block-options-button-size;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-right: 1px solid $color-background;
 }
 .k-block-options-button:first-child {

@@ -30,6 +30,8 @@
         @hide="hide(block)"
         @prepend="add($event, index)"
         @remove="remove(block)"
+        @sortDown="sort(block, index, index + 1)"
+        @sortUp="sort(block, index, index - 1)"
         @show="show(block)"
         @update="update(block, $event)"
       />
@@ -123,6 +125,17 @@ export default {
   },
   created() {
     this.save = debounce(this.save, 50);
+    this.outsideFocus = (event) => {
+      const overlay = document.querySelector(".k-overlay:last-of-type");
+      if (this.$el.contains(event.target) === false && (!overlay || overlay.contains(event.target) === false)) {
+        this.select(null);
+      }
+    };
+
+    document.addEventListener("focus", this.outsideFocus, true);
+  },
+  destroyed() {
+    document.removeEventListener("focus", this.outsideFocus);
   },
   methods: {
     async add(type = "text", index) {
@@ -234,6 +247,19 @@ export default {
     show(block) {
       this.$set(block, "isHidden", false);
       this.save();
+    },
+    sort(block, from, to) {
+      if (to < 0) {
+        return;
+      }
+      let blocks = this.$helper.clone(this.blocks);
+      blocks.splice(from, 1);
+      blocks.splice(to, 0, block);
+      this.blocks = blocks;
+      this.save();
+      this.$nextTick(() => {
+        this.focus(block);
+      });
     },
     update(block, content) {
       const index = this.blocks.findIndex(element => element.id === block.id);

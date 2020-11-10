@@ -1,19 +1,19 @@
 <template>
-  <div class="k-block-quote-editor">
+  <div class="k-block-type-quote-editor">
     <k-writer
       ref="text"
       :inline="true"
-      :placeholder="$t('field.blocks.quote.placeholder.text') + ' …'"
+      :placeholder="textField.placeholder"
       :value="content.text"
-      class="k-block-quote-text"
+      class="k-block-type-quote-text"
       @input="update({ text: $event })"
     />
     <k-writer
       ref="citation"
       :inline="true"
-      :placeholder="$t('field.blocks.quote.placeholder.citation') + ' …'"
+      :placeholder="citationField.placeholder"
       :value="content.citation"
-      class="k-block-quote-citation"
+      class="k-block-type-quote-citation"
       @input="update({ citation: $event })"
     />
   </div>
@@ -21,35 +21,33 @@
 
 <script>
 export default {
-  inheritAttrs: false,
-  props: {
-    content: [Array, Object]
+  computed: {
+    citationField() {
+      return this.field("citation", {});
+    },
+    textField() {
+      return this.field("text", {});
+    }
   },
   methods: {
     focus() {
       this.$refs.text.focus();
-    },
-    update(value) {
-      this.$emit("update", {
-        ...this.content,
-        ...value
-      });
     }
   }
 };
 </script>
 
 <style lang="scss">
-.k-block-quote-editor {
+.k-block-type-quote-editor {
   padding-left: 1rem;
   border-left: 2px solid #000;
 }
-.k-block-quote-text {
+.k-block-type-quote-text {
   font-size: $text-xl;
   margin-bottom: .25rem;
   line-height: 1.25em;
 }
-.k-block-quote-citation {
+.k-block-type-quote-citation {
   font-style: italic;
   font-size: $text-sm;
   color: $color-gray-600;

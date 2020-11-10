@@ -11,6 +11,7 @@
           :key="layout.id"
           :data-current="currentLayout && currentLayout.id === layout.id"
           class="k-layout"
+          tabindex="0"
           @click="currentLayout = layout"
         >
           <k-sort-handle class="k-layout-handle" />
@@ -20,6 +21,7 @@
               :key="columnIndex"
               :data-width="column.width"
               :id="column.id"
+              tabindex="0"
               class="k-column k-layout-column"
             >
               <k-blocks
@@ -38,6 +40,7 @@
                 })"
               />
               <button
+                v-if="column.blocks.length === 0"
                 class="k-layout-column-filler"
                 @click="$refs[layout.id + '-' + column.id + '-blocks'][0].choose(column.blocks.length)"
               />
@@ -232,8 +235,8 @@ $layout-padding: 0;
   align-items: center;
   justify-content: center;
 }
-.k-layout:hover .k-layout-options,
-.k-layout:hover .k-layout-handle {
+.k-layout:focus-within .k-layout-options,
+.k-layout:focus-within .k-layout-handle {
   display: flex;
 }
 .k-layout .k-layout-options > .k-button {
@@ -305,14 +308,19 @@ $layout-padding: 0;
   align-items: center;
 }
 
-.k-layout-column[data-current] {
+.k-layout:focus,
+.k-layout-column:focus {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  outline: 0;
+  box-shadow: $color-focus 0 0 0 1px, $color-focus-outline 0 0 0 3px;
 }
 .k-layout-column .k-blocks {
   background: none;
   box-shadow: none;
   padding: 0;
+  margin-bottom: 3rem;
+  border-bottom: 1px dashed $color-background;
 }
 .k-layout-column .k-blocks-empty.k-empty {
   display: none;

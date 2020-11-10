@@ -69,14 +69,14 @@ class Fieldsets extends Items
     public static function factory(array $fieldsets = null, array $options = [])
     {
         $fieldsets = $fieldsets ?? option('blocks.fieldsets', [
-            'code'      => 'blocks/code',
-            'gallery'   => 'blocks/gallery',
-            'heading'   => 'blocks/heading',
-            'image'     => 'blocks/image',
-            'kirbytext' => 'blocks/kirbytext',
-            'quote'     => 'blocks/quote',
-            'text'      => 'blocks/text',
-            'video'     => 'blocks/video',
+            'code'     => 'blocks/code',
+            'gallery'  => 'blocks/gallery',
+            'heading'  => 'blocks/heading',
+            'image'    => 'blocks/image',
+            'markdown' => 'blocks/markdown',
+            'quote'    => 'blocks/quote',
+            'text'     => 'blocks/text',
+            'video'    => 'blocks/video',
         ]);
 
         $result = static::createFieldsets($fieldsets);

@@ -21,6 +21,7 @@
           :tabs="tabs"
           :tab="tab"
           @show="$emit('show')"
+          @tab="tab = $event"
         />
         <k-form
           ref="form"
