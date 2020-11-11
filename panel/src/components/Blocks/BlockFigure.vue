@@ -1,6 +1,6 @@
 <template>
-  <figure class="k-block-figure" @dblclick="$emit('open')">
-    <span class="k-block-figure-container">
+  <figure class="k-block-figure" >
+    <span :data-cover="cover" class="k-block-figure-container" @dblclick="$emit('open')">
       <k-button
         v-if="isEmpty"
         :icon="emptyIcon"
@@ -10,7 +10,14 @@
       </k-button>
       <slot v-else />
     </span>
-    <figcaption v-if="caption" v-html="caption" />
+    <figcaption v-if="caption">
+      <k-writer
+        :inline="true"
+        :marks="captionMarks"
+        :value="caption"
+        @input="$emit('update', { caption: $event })"
+      />
+    </figcaption>
   </figure>
 </template>
 
@@ -19,6 +26,11 @@ export default {
   inheritAttrs: false,
   props: {
     caption: String,
+    captionMarks: [Boolean, Array],
+    cover: {
+      type: Boolean,
+      default: true
+    },
     isEmpty: Boolean,
     emptyIcon: String,
     emptyText: String
@@ -45,8 +57,12 @@ export default {
   right: 0;
   height: 100%;
   width: 100%;
+  object-fit: contain;
+}
+.k-block-figure-container[data-cover] > * {
   object-fit: cover;
 }
+
 .k-block-figure iframe {
   border: 0;
   pointer-events: none;

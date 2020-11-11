@@ -24,7 +24,6 @@ class Fieldsets extends Items
         $groups = [];
 
         foreach ($params as $type => $fieldset) {
-
             if (is_int($type) === true && is_string($fieldset)) {
                 $type     = $fieldset;
                 $fieldset = 'blocks/' . $type;
@@ -54,7 +53,6 @@ class Fieldsets extends Items
                     'open'      => $fieldset['open'] ?? true,
                     'fieldsets' => array_column($result['fieldsets'], 'type'),
                 ];
-
             } else {
                 $fieldsets[$fieldset['type']] = $fieldset;
             }

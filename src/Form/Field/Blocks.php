@@ -82,6 +82,12 @@ class Blocks extends FieldClass
         return $this->fieldsets;
     }
 
+    public function fieldsetGroups(): ?array
+    {
+        $fieldsetGroups = $this->fieldsets()->groups();
+        return empty($fieldsetGroups) === true ? null : $fieldsetGroups;
+    }
+
     public function fill($value = null)
     {
         $value  = BlocksCollection::parse($value);
@@ -119,7 +125,7 @@ class Blocks extends FieldClass
         return [
             'empty'          => $this->empty(),
             'fieldsets'      => $this->fieldsets()->toArray(),
-            'fieldsetGroups' => $this->fieldsets()->groups(),
+            'fieldsetGroups' => $this->fieldsetGroups(),
             'group'          => $this->group(),
             'max'            => $this->max(),
             'min'            => $this->min(),

@@ -1,5 +1,15 @@
 <template>
   <k-dropdown class="k-block-options">
+    <template v-for="(button, index) in toolbar">
+      <k-button
+        :current="button.current"
+        :icon="button.icon"
+        :tooltip="button.tooltip"
+        class="k-block-options-button"
+        @click="button.click"
+      />
+    </template>
+
     <k-button
       :tooltip="$t('edit')"
       icon="edit"
@@ -60,6 +70,7 @@ export default {
     isFull: Boolean,
     isHidden: Boolean,
     isOpen: Boolean,
+    toolbar: Array,
     wysiwyg: Boolean,
   },
   methods: {
@@ -98,6 +109,9 @@ $block-options-button-size: 30px;
 .k-block-options-button:last-child {
   border-top-right-radius: $rounded;
   border-bottom-right-radius: $rounded;
+}
+.k-block-options-button[aria-current] {
+  color: $color-focus;
 }
 .k-block-options-button:hover {
   background: $color-gray-100;

@@ -4,7 +4,6 @@
     :data-level="content.level"
     :inline="true"
     :marks="textField.marks"
-    :nodes="false"
     :placeholder="textField.placeholder"
     :value="content.text"
     class="k-block-type-heading-input"

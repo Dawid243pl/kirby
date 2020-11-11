@@ -66,6 +66,15 @@ export default {
     breaks: Boolean,
     code: Boolean,
     disabled: Boolean,
+    emptyDocument: {
+      type: Object,
+      default() {
+        return {
+          type: "doc",
+          content: []
+        };
+      }
+    },
     headings: [Array, Boolean],
     inline: {
       type: Boolean,
@@ -85,11 +94,9 @@ export default {
         ];
       }
     },
-    placeholder: {
-      type: String,
-      default: "Write something …",
-    },
+    placeholder: String,
     spellcheck: Boolean,
+    extensions: Array,
     value: {
       type: String,
       default: ""
@@ -116,6 +123,7 @@ export default {
       content: this.value,
       editable: !this.disabled,
       element: this.$el,
+      emptyDocument: this.emptyDocument,
       events: {
         link: () => {
           this.$refs.linkDialog.open(this.editor.getMarkAttrs("link"));
@@ -137,6 +145,7 @@ export default {
         // Extensions
         new History,
         new Toolbar,
+        ...this.extensions || [],
       ],
       inline: this.inline
     });
@@ -209,6 +218,9 @@ export default {
         return installed;
       });
 
+    },
+    getHTML() {
+      return this.editor.getHTML();
     },
     focus() {
       this.editor.focus();
@@ -313,7 +325,7 @@ export default {
   font-family: $font-mono;
 }
 
-.k-writer[data-empty]::before {
+.k-writer[data-placeholder][data-empty]::before {
   content: attr(data-placeholder);
   position: absolute;
   line-height: inherit;

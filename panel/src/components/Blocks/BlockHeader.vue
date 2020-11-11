@@ -19,12 +19,19 @@
       </k-button>
     </nav>
 
-    <k-button
-      v-if="isHidden"
-      class="k-block-header-status"
-      icon="hidden"
-      @click.stop="$emit('show')"
-    />
+    <nav class="k-block-header-options">
+      <k-button
+        v-if="isHidden"
+        class="k-block-header-status"
+        icon="hidden"
+        @click.stop="$emit('show')"
+      />
+      <k-button
+        class="k-block-header-close"
+        icon="cancel"
+        @click="$emit('close')"
+      />
+    </nav>
   </header>
 </template>
 
@@ -61,7 +68,6 @@ $block-header-padding: 1.5rem;
   line-height: 1;
   justify-content: space-between;
   background: #fff;
-  padding-right: 2.5rem;
 }
 .k-block-header-tabs {
   display: flex;
@@ -85,8 +91,17 @@ $block-header-padding: 1.5rem;
   background: $color-black;
   height: 2px;
 }
-.k-block-header-status {
-  width: 2.5rem;
+
+.k-block-header-options {
+  padding-right: 1.5rem;
+}
+.k-block-header-options .k-button {
+  width: $block-header-height;
+  height: $block-header-height;
   color: $color-gray-500;
+  line-height: 1;
+}
+.k-block-header-options .k-button:hover {
+  color: $color-black;
 }
 </style>

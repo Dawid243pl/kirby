@@ -6,8 +6,8 @@
     :data-hidden="isHidden"
     :data-selected="isSelected"
     :data-translate="fieldset.translate"
-    tabindex="0"
     class="k-block-container"
+    tabindex="0"
     @keydown.ctrl.shift.down.prevent="$emit('sortDown')"
     @keydown.ctrl.shift.up.prevent="$emit('sortUp')"
     @focus="$emit('focus')"
@@ -33,6 +33,7 @@
       ref="drawer"
       v-bind="$props"
       @close="focus()"
+      @show="$emit('show', $event)"
       @update="$emit('update', $event)"
     />
 
@@ -43,6 +44,8 @@
 </template>
 
 <script>
+import Vue from "vue";
+
 export default {
   inheritAttrs: false,
   props: {
@@ -134,6 +137,7 @@ export default {
   position: relative;
   padding: .75rem;
   border-bottom: 1px dashed rgba(#000, .1);
+  background: $color-white;
 }
 .k-block-container:last-of-type {
   border-bottom: 0;

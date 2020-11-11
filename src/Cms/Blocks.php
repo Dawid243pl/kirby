@@ -45,6 +45,49 @@ class Blocks extends Items
     }
 
     /**
+     * Wrapper around the factory to
+     * catch blocks from layouts
+     *
+     * @param array $items
+     * @param array $params
+     * @return \Kirby\Cms\Blocks
+     */
+    public static function factory(array $items = null, array $params = [])
+    {
+        return parent::factory(static::extractFromLayouts($items), $params);
+    }
+
+    /**
+     * Pull out blocks from layouts
+     *
+     * @param array $input
+     * @return array
+     */
+    protected static function extractFromLayouts(array $input): array
+    {
+        if (empty($input) === true) {
+            return [];
+        }
+
+        // no layouts
+        if (array_key_exists('columns', $input[0]) === false) {
+            return $input;
+        }
+
+        $blocks = [];
+
+        foreach ($input as $layout) {
+            foreach (($layout['columns'] ?? []) as $column) {
+                foreach (($column['blocks'] ?? []) as $block) {
+                    $blocks[] = $block;
+                }
+            }
+        }
+
+        return $blocks;
+    }
+
+    /**
      * Parse and sanitize various block formats
      *
      * @param array|string $input

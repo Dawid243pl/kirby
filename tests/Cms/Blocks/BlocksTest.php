@@ -19,6 +19,40 @@ class BlocksTest extends TestCase
         $this->page = new Page(['slug' => 'test']);
     }
 
+    public function testFactoryFromLayouts()
+    {
+        $layouts = [
+            [
+                'columns' => [
+                    [
+                        'blocks' => [
+                            [
+                                'type' => 'heading'
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'columns' => [
+                    [
+                        'blocks' => [
+                            [
+                                'type' => 'text'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $blocks = Blocks::factory($layouts);
+
+        $this->assertCount(2, $blocks);
+        $this->assertSame('heading', $blocks->first()->type());
+        $this->assertSame('text', $blocks->last()->type());
+    }
+
     public function testToHtml()
     {
         $blocks = Blocks::factory([
@@ -36,7 +70,7 @@ class BlocksTest extends TestCase
             ],
         ]);
 
-        $expected = "<h1>Hello world</h1>\n<p>Nice blocks</p>\n";
+        $expected = "<h2>Hello world</h2>\n<p>Nice blocks</p>\n";
 
         $this->assertSame($expected, $blocks->toHtml());
     }

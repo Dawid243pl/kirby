@@ -262,6 +262,7 @@ $layout-gap: 1px;
 }
 .k-layout-column[data-empty] .k-layout-column-filler {
   border-top: 0;
+  height: 6rem;
 }
 .k-layout-column-filler:hover {
   background: $color-gray-100;

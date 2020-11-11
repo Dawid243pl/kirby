@@ -4,7 +4,8 @@
     :empty-text="$t('field.blocks.video.placeholder') + ' …'"
     :is-empty="!video"
     empty-icon="video"
-    v-on="$listeners"
+    @open="open"
+    @update="update"
   >
     <iframe v-if="video" :src="video" />
   </k-block-figure>

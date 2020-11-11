@@ -7,12 +7,6 @@
   >
     <div class="k-block-drawer" @click.stop="close()">
       <div class="k-block-drawer-box" @click.stop>
-        <k-button
-          class="k-block-drawer-close"
-          icon="cancel"
-          @click="close()"
-        />
-
         <k-block-header
           class="k-block-drawer-header"
           :content="content"
@@ -20,6 +14,7 @@
           :is-hidden="isHidden"
           :tabs="tabs"
           :tab="tab"
+          @close="close()"
           @show="$emit('show')"
           @tab="tab = $event"
         />
@@ -149,18 +144,6 @@ export default {
   flex-basis: 50rem;
   background: $color-background;
   box-shadow: $shadow-xl;
-}
-.k-block-drawer-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 0 1.5rem;
-  height: 2.5rem;
-  line-height: 1;
-  color: $color-gray-500;
-}
-.k-block-drawer-close:hover {
-  color: $color-black;
 }
 .k-block-drawer-form {
   padding: 1.5rem;

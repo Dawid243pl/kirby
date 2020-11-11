@@ -147,7 +147,7 @@ class BlockTest extends TestCase
             'type' => 'heading',
         ]);
 
-        $expected = "<h1>Test</h1>\n";
+        $expected = "<h2>Test</h2>\n";
 
         $this->assertInstanceOf('Kirby\Cms\Field', $block->toField());
         $this->assertSame($block->parent(), $block->toField()->parent());
@@ -164,7 +164,7 @@ class BlockTest extends TestCase
             'type' => 'heading',
         ]);
 
-        $expected = "<h1>Test</h1>\n";
+        $expected = "<h2>Test</h2>\n";
 
         $this->assertSame($expected, $block->toHtml());
         $this->assertSame($expected, $block->__toString());

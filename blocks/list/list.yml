@@ -1,0 +1,15 @@
+name: List
+icon: list-bullet
+wysiwyg: true
+preview: list
+fields:
+  type:
+    label: Type
+    type: radio
+    default: ul
+    columns: 2
+    options:
+      ul: Bullet List
+      ol: Ordered List
+  list:
+    type: hidden

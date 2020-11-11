@@ -8,6 +8,7 @@ return [
     'blocks/gallery'  => $blocksRoot . '/gallery/gallery.yml',
     'blocks/heading'  => $blocksRoot . '/heading/heading.yml',
     'blocks/image'    => $blocksRoot . '/image/image.yml',
+    'blocks/list'     => $blocksRoot . '/list/list.yml',
     'blocks/markdown' => $blocksRoot . '/markdown/markdown.yml',
     'blocks/quote'    => $blocksRoot . '/quote/quote.yml',
     'blocks/table'    => $blocksRoot . '/table/table.yml',

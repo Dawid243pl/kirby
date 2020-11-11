@@ -17,12 +17,15 @@ export default {
 
       return field || fallback;
     },
+    open() {
+      this.$emit("open");
+    },
     update(content) {
-      this.$emit('update', {
+      this.$emit("update", {
         ...this.content,
         ...content
       });
-    }
+    },
   }
 };
 </script>

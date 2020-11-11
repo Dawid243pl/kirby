@@ -257,6 +257,9 @@ b {
   left: 0;
   background: $color-background;
 }
+.k-panel:focus {
+  outline: 0;
+}
 .k-panel[data-loading] {
   animation: LoadingCursor 0.5s;
 }
