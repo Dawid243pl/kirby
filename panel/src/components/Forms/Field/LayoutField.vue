@@ -22,8 +22,8 @@ export default {
   props: {
     ...Field.props,
     empty: String,
-    fieldsets: Object,
     fieldsetGroups: Object,
+    fieldsets: Object,
     layouts: {
       type: Array,
       default() {

@@ -2,14 +2,15 @@
   <div>
     <template v-if="rows.length">
       <k-draggable
-          v-bind="draggableOptions"
-          class="k-layouts"
-          @sort="save"
+        v-bind="draggableOptions"
+        class="k-layouts"
+        @sort="save"
       >
         <k-layout
           v-for="(layout, layoutIndex) in rows"
           :key="layout.id"
           :endpoints="endpoints"
+          :fieldset-groups="fieldsetGroups"
           :fieldsets="fieldsets"
           :is-selected="selected === layout.id"
           v-bind="layout"
@@ -79,6 +80,7 @@ export default {
   props: {
     empty: String,
     endpoints: Object,
+    fieldsetGroups: Object,
     fieldsets: Object,
     layouts: Array,
     max: Number,
@@ -98,7 +100,6 @@ export default {
         id: this._uid,
         handle: true,
         list: this.rows,
-        delay: 10
       };
     }
   },
@@ -162,6 +163,16 @@ export default {
 </script>
 
 <style lang="scss">
+.k-layouts .k-sortable-ghost {
+  position: relative;
+  box-shadow: rgba($color-gray-900, 0.25) 0 5px 10px;
+  outline: 2px solid $color-focus;
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+  z-index: 1;
+}
+
 /** Selector **/
 .k-layout-selector.k-dialog {
   background: #313740;

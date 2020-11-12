@@ -51,7 +51,7 @@ class Fieldsets extends Items
                     'label'     => $fieldset['label'] ?? Str::ucfirst($type),
                     'name'      => $type,
                     'open'      => $fieldset['open'] ?? true,
-                    'fieldsets' => array_column($result['fieldsets'], 'type'),
+                    'sets'      => array_column($result['fieldsets'], 'type'),
                 ];
             } else {
                 $fieldsets[$fieldset['type']] = $fieldset;

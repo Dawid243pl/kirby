@@ -57,7 +57,7 @@ export default {
       const fieldsetGroups = this.fieldsetGroups || {
         blocks: {
           label: this.$t('field.blocks.fieldsets.label'),
-          fieldsets: Object.keys(this.fieldsets),
+          sets: Object.keys(this.fieldsets),
         }
       };
 
@@ -65,7 +65,7 @@ export default {
         let group = fieldsetGroups[key];
 
         group.open = group.open === false ? false : true;
-        group.fieldsets = group.fieldsets.filter(fieldsetName => this.fieldsets[fieldsetName]).map(fieldsetName => {
+        group.fieldsets = group.sets.filter(fieldsetName => this.fieldsets[fieldsetName]).map(fieldsetName => {
           index++;
 
           return {

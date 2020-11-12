@@ -9,6 +9,7 @@
     <k-blocks
       ref="blocks"
       :endpoints="endpoints"
+      :fieldset-groups="fieldsetGroups"
       :fieldsets="fieldsets"
       :value="blocks"
       group="layout"
@@ -23,6 +24,7 @@ export default {
   props: {
     blocks: Array,
     endpoints: Object,
+    fieldsetGroups: Object,
     fieldsets: Object,
     id: String,
     isSelected: Boolean,

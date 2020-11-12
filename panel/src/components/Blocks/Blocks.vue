@@ -285,10 +285,10 @@ export default {
 }
 .k-blocks .k-sortable-ghost {
   outline: 2px solid $color-focus;
+  box-shadow: rgba($color-gray-900, 0.25) 0 5px 10px;
   cursor: grabbing;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
-  background: rgba($color-blue-200, .5);
 }
 .k-blocks-empty.k-empty {
   cursor: pointer;

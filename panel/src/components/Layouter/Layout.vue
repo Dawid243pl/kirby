@@ -10,6 +10,7 @@
         v-for="(column, columnIndex) in columns"
         :key="column.id"
         :endpoints="endpoints"
+        :fieldset-groups="fieldsetGroups"
         :fieldsets="fieldsets"
         v-bind="column"
         @input="$emit('input', {
@@ -49,6 +50,7 @@ export default {
   props: {
     columns: Array,
     endpoints: Object,
+    fieldsetGroups: Object,
     fieldsets: Object,
     id: String,
     isSelected: Boolean

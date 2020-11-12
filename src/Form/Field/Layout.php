@@ -36,9 +36,9 @@ class Layout extends Blocks
 
     public function props(): array
     {
-        return [
+        return array_merge(parent::props(), [
             'layouts' => $this->layouts()
-        ] + parent::props();
+        ]);
     }
 
     protected function setLayouts(array $layouts = [])
