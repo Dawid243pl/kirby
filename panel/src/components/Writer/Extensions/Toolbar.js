@@ -14,6 +14,7 @@ export default class Toolbar extends Extension {
   emit() {
     this.editor.emit("toolbar", {
       marks: this.marks,
+      nodes: this.nodes,
       position: this.position,
       visible: this.visible,
     });
@@ -56,6 +57,10 @@ export default class Toolbar extends Extension {
 
   get marks() {
     return this.editor.activeMarks;
+  }
+
+  get nodes() {
+    return this.editor.activeNodes;
   }
 
   open() {

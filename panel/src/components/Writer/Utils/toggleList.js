@@ -2,9 +2,9 @@ import { wrapInList, liftListItem } from "prosemirror-schema-list";
 import findParentNode from "./findParentNode";
 
 function isList(node, schema) {
-  return (node.type === schema.nodes.bullet_list
-    || node.type === schema.nodes.ordered_list
-    || node.type === schema.nodes.todo_list)
+  return (node.type === schema.nodes.bulletList
+    || node.type === schema.nodes.orderedList
+    || node.type === schema.nodes.todoList)
 }
 
 export default function toggleList(listType, itemType) {

@@ -1,7 +1,11 @@
 <template>
   <div class="k-writer-toolbar">
-    <!-- <k-dropdown @mousedown.native.prevent>
-      <k-button class="k-writer-toolbar-button k-writer-toolbar-nodes" @click="$refs.nodes.toggle()" icon="text">Paragraph</k-button>
+    <k-dropdown v-if="Object.keys(nodeButtons).length > 1 && activeNode" @mousedown.native.prevent>
+      <k-button
+        :icon="activeNode.icon"
+        class="k-writer-toolbar-button k-writer-toolbar-nodes"
+        @click="$refs.nodes.toggle()"
+      />
       <k-dropdown-content ref="nodes">
         <k-dropdown-item
           v-for="(node, nodeType) in nodeButtons"
@@ -12,7 +16,7 @@
           {{ node.label }}
         </k-dropdown-item>
       </k-dropdown-content>
-    </k-dropdown> -->
+    </k-dropdown>
 
     <k-button
       v-for="(mark, markType) in markButtons"
@@ -33,8 +37,11 @@ export default {
         return [];
       }
     },
-    activeNode: {
-      type: [String, Boolean]
+    activeNodes: {
+      type: Array,
+      default() {
+        return [];
+      }
     },
     editor: {
       type: Object,
@@ -45,6 +52,16 @@ export default {
     }
   },
   computed: {
+    activeNode() {
+
+      const buttonKey = Object.keys(this.nodeButtons).find(buttonKey => this.activeNodes.includes(buttonKey));
+
+      if (buttonKey) {
+        return this.nodeButtons[buttonKey];
+      }
+
+      return false;
+    },
     markButtons() {
       return this.buttons("mark");
     },
@@ -96,7 +113,6 @@ export default {
   justify-content: center;
   height: 30px;
   width: 30px;
-  border-right: 1px solid darken($color-gray-800, 5%);
   font-size: $text-sm !important;
   color: currentColor;
   line-height: 1;
@@ -104,15 +120,27 @@ export default {
 .k-writer-toolbar-button.k-button:hover {
   background: rgba(#fff, .15);
 }
-.k-writer-toolbar-button.k-button:last-of-type {
-  border-right: 0;
-}
 .k-writer-toolbar-button.k-writer-toolbar-button-active {
   color: $color-blue-300;
 }
-
-.k-writer-toolbar-nodes {
-  border-right: 1px solid $color-gray-700;
+.k-writer-toolbar-button.k-writer-toolbar-nodes {
+  width: auto;
+  padding: 0 .75rem;
+}
+.k-writer-toolbar .k-dropdown + .k-writer-toolbar-button {
+  border-left: 1px solid $color-gray-700;
+}
+.k-writer-toolbar-button.k-writer-toolbar-nodes::after {
+  content: "";
+  margin-left: .5rem;
+  border-top: 4px solid $color-white;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+.k-writer-toolbar .k-dropdown-content {
+  color: $color-black;
+  background: $color-white;
+  margin-top: .5rem;
 }
 
 </style>

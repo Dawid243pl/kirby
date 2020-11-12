@@ -2,13 +2,6 @@ import Node from "../Node";
 
 export default class Paragraph extends Node {
 
-  get button() {
-    return {
-      label: "Paragraph",
-      icon: "text"
-    };
-  }
-
   commands({ utils, type }) {
     return {
       "paragraph": () => utils.setBlockType(type)

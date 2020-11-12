@@ -2,16 +2,16 @@ import Node from "../Node";
 
 export default class ListItem extends Node {
 
-  get name() {
-    return "listItem";
-  }
-
   keys({ type, utils }) {
     return {
       "Enter": utils.splitListItem(type),
       "Shift-Tab": utils.liftListItem(type),
       "Tab": utils.sinkListItem(type)
     };
+  }
+
+  get name() {
+    return "listItem";
   }
 
   get schema() {

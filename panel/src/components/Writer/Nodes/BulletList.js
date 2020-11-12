@@ -2,6 +2,13 @@ import Node from "../Node";
 
 export default class BulletList extends Node {
 
+  get button() {
+    return {
+      label: "Bullet list",
+      icon: "list-bullet",
+    };
+  }
+
   commands({ type, schema, utils }) {
     return () => utils.toggleList(type, schema.nodes.listItem);
   }

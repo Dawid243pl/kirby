@@ -10,11 +10,7 @@ export default class OrderedList extends Node {
   }
 
   commands({ type, schema, utils }) {
-    return {
-      "orderedList": () => utils.chainCommands(utils.setBlockType(schema.nodes.paragraph), utils.wrapInList(type)),
-      "toggleOrderedList": () => utils.toggleList(type, schema.nodes.listItem),
-    }
-
+    return () => utils.toggleList(type, schema.nodes.listItem);
   }
 
   inputRules({ type, utils }) {

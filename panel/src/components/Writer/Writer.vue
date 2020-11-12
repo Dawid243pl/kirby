@@ -12,7 +12,7 @@
         ref="toolbar"
         :editor="editor"
         :active-marks="toolbar.marks"
-        :active-node="false"
+        :active-nodes="toolbar.nodes"
         :style="{
           bottom: toolbar.position.bottom + 'px',
           left: toolbar.position.left + 'px'
@@ -24,6 +24,7 @@
         @close="editor.focus()"
         @submit="editor.command('toggleLink', $event)"
       />
+
     </template>
   </div>
 </template>
@@ -177,6 +178,9 @@ export default {
 
       return installed;
     },
+    command(command, ...args) {
+      this.editor.command(command, ...args);
+    },
     createMarks() {
       return this.filterExtensions({
         bold: new Bold,
@@ -303,6 +307,12 @@ export default {
 }
 .k-writer .ProseMirror ul > li {
   list-style: disc;
+}
+.k-writer .ProseMirror ul ul > li {
+  list-style: circle;
+}
+.k-writer .ProseMirror ul ul ul > li {
+  list-style: square;
 }
 .k-writer .ProseMirror ol > li {
   list-style: decimal;

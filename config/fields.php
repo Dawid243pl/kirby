@@ -12,6 +12,7 @@ return [
     'info'        => __DIR__ . '/fields/info.php',
     'layout'      => 'Kirby\Form\Field\Layout',
     'line'        => __DIR__ . '/fields/line.php',
+    'list'        => __DIR__ . '/fields/list.php',
     'multiselect' => __DIR__ . '/fields/multiselect.php',
     'number'      => __DIR__ . '/fields/number.php',
     'pages'       => __DIR__ . '/fields/pages.php',

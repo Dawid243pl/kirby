@@ -30,7 +30,8 @@ export default {
         return false;
       }
 
-      return this.$helper.string.template(this.fieldset.label, this.content);
+      const label = this.$helper.string.template(this.fieldset.label, this.content);;
+      return label === "…" ? false : label;
     },
     name() {
       return this.fieldset.name;
