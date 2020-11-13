@@ -142,11 +142,18 @@ export default {
 .k-block-drawer-box {
   position: relative;
   flex-basis: 50rem;
+  display: flex;
+  flex-direction: column;
   background: $color-background;
   box-shadow: $shadow-xl;
 }
+.k-block-header {
+  flex-shrink: 0;
+}
 .k-block-drawer-form {
   padding: 1.5rem;
+  flex-grow: 1;
+  overflow: auto;
   background: $color-background;
 }
 </style>
