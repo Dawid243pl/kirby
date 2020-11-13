@@ -1,1 +1,1 @@
-<?= $block->list() ?>
+<?= $block->list();

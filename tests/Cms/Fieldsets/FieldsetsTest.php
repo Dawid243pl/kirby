@@ -6,8 +6,6 @@ use PHPUnit\Framework\TestCase;
 
 class FieldsetsTest extends TestCase
 {
-
-
     public function testExtendGroups()
     {
         new App([

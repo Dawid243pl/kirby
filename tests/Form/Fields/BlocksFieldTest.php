@@ -46,8 +46,8 @@ class BlocksFieldTest extends TestCase
         $this->assertArrayHasKey('text', $groups);
         $this->assertArrayHasKey('media', $groups);
 
-        $this->assertSame(['text', 'heading'], $groups['text']['fieldsets']);
-        $this->assertSame(['image', 'video'], $groups['media']['fieldsets']);
+        $this->assertSame(['text', 'heading'], $groups['text']['sets']);
+        $this->assertSame(['image', 'video'], $groups['media']['sets']);
     }
 
     public function testMax()
