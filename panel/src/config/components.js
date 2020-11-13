@@ -64,6 +64,12 @@ Vue.component("k-user-rename-dialog", UserRenameDialog);
 Vue.component("k-user-role-dialog", UserRoleDialog);
 Vue.component("k-users-dialog", UsersDialog);
 
+/* Drawers */
+import Drawer from "@/components/Drawers/Drawer.vue";
+
+Vue.component("k-drawer", Drawer);
+
+
 /* Form */
 import Autocomplete from "@/components/Forms/Autocomplete.vue";
 import Calendar from "@/components/Forms/Calendar.vue";

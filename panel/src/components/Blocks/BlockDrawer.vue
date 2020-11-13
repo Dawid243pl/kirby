@@ -1,53 +1,49 @@
 <template>
-  <k-overlay
-    ref="overlay"
-    :dimmed="false"
+  <k-drawer
+    ref="drawer"
+    :icon="fieldset.icon || 'block'"
+    :tabs="fieldset.tabs"
+    :tab="tab"
+    :title="fieldset.name"
+    class="k-block-drawer"
     @close="$emit('close')"
     @open="$emit('open')"
+    @tab="tab = $event"
   >
-    <div class="k-block-drawer" @click.stop="close()">
-      <div class="k-block-drawer-box" @click.stop>
-        <k-block-header
-          class="k-block-drawer-header"
-          :content="content"
-          :fieldset="fieldset"
-          :is-hidden="isHidden"
-          :tabs="tabs"
-          :tab="tab"
-          @close="close()"
-          @show="$emit('show')"
-          @tab="tab = $event"
-        />
-        <k-form
-          ref="form"
-          :autofocus="true"
-          :fields="fields"
-          :value="value"
-          class="k-block-drawer-form"
-          @input="$emit('update', $event)"
-        />
-      </div>
-    </div>
-  </k-overlay>
+    <template #options>
+      <k-button
+        v-if="isHidden"
+        class="k-drawer-option"
+        icon="hidden"
+        @click="$emit('show')"
+      />
+    </template>
+    <template #default>
+      <k-form
+        ref="form"
+        :autofocus="true"
+        :fields="fields"
+        :value="value"
+        @input="$emit('update', $event)"
+      />
+    </template>
+  </k-drawer>
 </template>
 
 <script>
 export default {
   inheritAttrs: false,
   props: {
-    attrs: [Array, Object],
     content: [Array, Object],
     endpoints: Object,
     fieldset: Object,
-    id: String,
     isHidden: Boolean,
     name: String,
     type: String,
   },
   data() {
     return {
-      tab: null,
-      isOpen: false
+      tab: null
     };
   },
   computed: {
@@ -95,8 +91,7 @@ export default {
   },
   methods: {
     close() {
-      this.$refs.overlay.close();
-      this.isOpen = false;
+      this.$refs.drawer.close();
     },
     focus() {
       if (this.$refs.form && typeof this.$refs.form.focus === "function") {
@@ -104,56 +99,15 @@ export default {
       }
     },
     open(tab, focus = true) {
-      this.$refs.overlay.open();
+      this.$refs.drawer.open();
       this.tab = tab || this.firstTab.name;
-
-      this.$nextTick(() => {
-        this.isOpen = true;
-      });
-
 
       if (focus !== false) {
         setTimeout(() => {
           this.focus();
         }, 1);
       }
-    },
-    remove() {
-      this.$refs.remove.close();
-      this.$emit("remove", this.id);
     }
   }
 }
 </script>
-
-<style lang="scss">
-.k-block-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: z-index(toolbar);
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-end;
-  background: rgba(#000, .2);
-}
-.k-block-drawer-box {
-  position: relative;
-  flex-basis: 50rem;
-  display: flex;
-  flex-direction: column;
-  background: $color-background;
-  box-shadow: $shadow-xl;
-}
-.k-block-header {
-  flex-shrink: 0;
-}
-.k-block-drawer-form {
-  padding: 1.5rem;
-  flex-grow: 1;
-  overflow: auto;
-  background: $color-background;
-}
-</style>

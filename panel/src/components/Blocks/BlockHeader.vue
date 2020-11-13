@@ -3,6 +3,7 @@
     <k-block-title
       :content="content"
       :fieldset="fieldset"
+      class="k-block-header-title"
     />
     <nav
       v-if="hasTabs"
@@ -68,6 +69,9 @@ $block-header-padding: 1.5rem;
   line-height: 1;
   justify-content: space-between;
   background: #fff;
+}
+.k-block-header-title {
+  flex-grow: 1;
 }
 .k-block-header-tabs {
   display: flex;
