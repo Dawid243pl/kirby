@@ -14,15 +14,16 @@
           :fieldsets="fieldsets"
           :is-selected="selected === layout.id"
           v-bind="layout"
-          @select="selected = layout.id"
           @append="selectLayout(layoutIndex + 1)"
-          @prepend="selectLayout(layoutIndex)"
-          @remove="removeLayout(layout)"
+          @duplicate="duplicateLayout(layoutIndex, layout)"
           @input="updateLayout({
             layout,
             layoutIndex,
             ...$event
           })"
+          @prepend="selectLayout(layoutIndex)"
+          @remove="removeLayout(layout)"
+          @select="selected = layout.id"
         />
       </k-draggable>
 
@@ -130,6 +131,26 @@ export default {
         this.$refs.selector.close();
       }
 
+      this.save();
+    },
+    duplicateLayout(index, layout) {
+      let copy = {
+        ...this.$helper.clone(layout),
+        id: this.$helper.uuid()
+      };
+
+      // replace all unique IDs for columns and blocks
+      copy.columns = copy.columns.map(column => {
+        column.id = this.$helper.uuid();
+        column.blocks = column.blocks.map(block => {
+          block.id = this.$helper.uuid();
+          return block;
+        });
+
+        return column;
+      });
+
+      this.rows.splice(index + 1, 0, copy);
       this.save();
     },
     removeLayout(layout) {

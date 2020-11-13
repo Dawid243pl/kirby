@@ -169,10 +169,9 @@ export default {
       this.$set(block, "type", type);
     },
     async duplicate(block, index) {
-      const response = await this.$api.get(this.endpoints.field + "/uuid");
       const copy = {
         ...this.$helper.clone(block),
-        id: response["uuid"]
+        id: this.$helper.uuid()
       };
       this.blocks.splice(index + 1, 0, copy);
       this.save();

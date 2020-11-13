@@ -27,6 +27,8 @@
           <k-dropdown-item icon="angle-up" @click="$emit('prepend')">{{ $t("insert.before") }}</k-dropdown-item>
           <k-dropdown-item icon="angle-down" @click="$emit('append')">{{ $t("insert.after") }}</k-dropdown-item>
           <hr>
+          <k-dropdown-item icon="copy" @click="$emit('duplicate')">{{ $t("duplicate") }}</k-dropdown-item>
+          <hr>
           <k-dropdown-item icon="trash" @click="$refs.confirmRemoveDialog.open()">{{ $t("field.layout.delete") }}</k-dropdown-item>
         </k-dropdown-content>
       </k-dropdown>
